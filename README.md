@@ -1,15 +1,29 @@
-# mita-bot
+# Mita bot
+Mita bot is a Discord bot developed for Mita's Heart community.
 
-To install dependencies:
+## Installation
+1. Clone the repo
+    ```bash
+    bun install
+    ```
+2. Install dependencies
+    ```bash
+    bun install
+    ```
+3. Create .env file
+    ```bash
+    cp .example.env .env
+    ```
+4. Populate .env fields
 
+## Deploy commands
 ```bash
-bun install
+bun deploy:commands
 ```
 
-To run:
-
+## Start bot
 ```bash
-bun run index.ts
+bun run start
 ```
 
-This project was created using `bun init` in bun v1.3.1. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+For more scripts, you can check out the `package.json` file.
