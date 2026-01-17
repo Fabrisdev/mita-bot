@@ -24,7 +24,7 @@ export default async (interaction: Interaction<CacheType>) => {
 			const permissionName = permissionBitToName(permission);
 			interaction.reply({
 				content: `This command requires the \`${permissionName}\` permission.`,
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
