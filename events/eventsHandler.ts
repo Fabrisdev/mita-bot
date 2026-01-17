@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { Event } from "../events/types";
+import type { Event } from "./types";
 
 const EXPECTED_EXTENSION = ".event.ts";
 const EXPECTED_FOLDERNAME = "events";
