@@ -58,8 +58,11 @@ export default {
 
 		await interaction.guild.members.ban(user, { reason });
 
-		interaction.reply(
+		await interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
+		);
+		alert(
+			`Moderator <#${interaction.user.id}> has banned ${user.tag} with the reason: ${reason}`,
 		);
 	},
 } satisfies Command<"guild">;
