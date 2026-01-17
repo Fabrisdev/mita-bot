@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { Command } from "./types";
+import type { Command, CommandEnvironment } from "./types";
 
 const EXPECTED_EXTENSION = ".command.ts";
 const EXPECTED_FOLDERNAME = "commands";
 
 export async function fetchCommands() {
-	const commands = new Map<string, Command>();
+	const commands = new Map<string, Command<CommandEnvironment>>();
 	const files = await fs.readdir(EXPECTED_FOLDERNAME);
 	for (const file of files) {
 		if (!file.endsWith(EXPECTED_EXTENSION)) continue;

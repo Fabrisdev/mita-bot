@@ -5,9 +5,9 @@ import type {
 	PermissionFlagBits,
 } from "discord.js";
 
-type Environment = "guild" | "dm" | "both";
+export type CommandEnvironment = "guild" | "dm" | "both";
 
-export type Command<E extends Environment> = {
+export type Command<E extends CommandEnvironment> = {
 	description: string;
 	options?: ApplicationCommandOptionData[];
 	permissions: PermissionFlagBits[];
