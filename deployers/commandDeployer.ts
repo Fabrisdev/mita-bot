@@ -1,5 +1,5 @@
 import { REST, Routes, SlashCommandBuilder } from "discord.js";
-import { fetchCommands } from "../commands/commandsHandler";
+import { fetchCommands } from "../commands/handler";
 import { clientId, guildId, token } from "../environment";
 
 const commands = await fetchCommands();

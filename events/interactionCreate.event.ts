@@ -1,5 +1,5 @@
 import type { CacheType, Interaction } from "discord.js";
-import { fetchCommands } from "../commands/commandsHandler";
+import { fetchCommands } from "../commands/handler";
 
 const commands = await fetchCommands();
 
