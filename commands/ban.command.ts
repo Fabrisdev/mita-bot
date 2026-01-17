@@ -64,7 +64,7 @@ export default {
 		);
 		alert(
 			interaction.guild.id,
-			`Moderator <#${interaction.user.id}> has banned ${user.tag} with the reason: ${reason}`,
+			`Moderator ${interaction.user.tag} has banned ${user.tag} with the reason: ${reason}`,
 		);
 	},
 } satisfies Command<"guild">;
