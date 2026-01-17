@@ -6,4 +6,21 @@ export default defineSchema({
 		guildId: v.string(),
 		alertsChannelId: v.string(),
 	}).index("by_guild", ["guildId"]),
+	history: defineTable({
+		guildId: v.string(),
+		userId: v.string(),
+		history: v.array(
+			v.object({
+				type: v.union(
+					v.literal("ban"),
+					v.literal("unban"),
+					v.literal("kick"),
+					v.literal("mute"),
+					v.literal("warn"),
+				),
+				at: v.number(),
+				moderatorId: v.string(),
+			}),
+		),
+	}).index("by_user_and_guild", ["guildId", "userId"]),
 });
