@@ -22,6 +22,14 @@ export default {
 		const user = interaction.options.getUser("user", true);
 		const reason =
 			interaction.options.getString("reason") ?? "No reason specified";
+
+		if (user.id === interaction.client.user.id) {
+			interaction.reply({
+				content: "No! :(",
+			});
+			return;
+		}
+
 		interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
 		);
