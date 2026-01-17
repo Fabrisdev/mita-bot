@@ -11,7 +11,9 @@ export async function setAlertsChannel(guildId: string, channelId: string) {
 }
 
 export async function getAlertsChannel(guildId: string) {
-	return await convex.query(api.functions.guildSettings.getByGuild, {
-		guildId,
-	});
+	return await convex
+		.query(api.functions.guildSettings.getByGuild, {
+			guildId,
+		})
+		.then((row) => row?.alertsChannelId);
 }
