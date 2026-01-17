@@ -1,6 +1,7 @@
 import {
 	type CacheType,
 	type Interaction,
+	MessageFlags,
 	PermissionsBitField,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
@@ -27,6 +28,20 @@ export default async (interaction: Interaction<CacheType>) => {
 			});
 			return;
 		}
+	}
+	if (command.environment === "guild" && interaction.guild === null) {
+		await interaction.reply({
+			content: "This command can only be run inside the server.",
+			flags: MessageFlags.Ephemeral,
+		});
+		return;
+	}
+	if (command.environment === "dm" && interaction.guild) {
+		await interaction.reply({
+			content: "This command can only be run on DMs.",
+			flags: MessageFlags.Ephemeral,
+		});
+		return;
 	}
 	try {
 		await command.run(interaction);
