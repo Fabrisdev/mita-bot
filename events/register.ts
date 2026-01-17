@@ -1,5 +1,5 @@
 import { client } from "../client";
-import { fetchEvents } from "./eventsHandler";
+import { fetchEvents } from "./handler";
 
 export async function registerEvents() {
 	const events = await fetchEvents();
