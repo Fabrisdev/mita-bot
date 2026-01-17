@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import type { Command } from "./types";
 
 export default {
@@ -17,6 +17,7 @@ export default {
 			required: false,
 		},
 	],
+	permissions: [PermissionFlagsBits.BanMembers],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
 		const reason =
