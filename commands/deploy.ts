@@ -21,3 +21,4 @@ await rest.put(Routes.applicationGuildCommands(clientId(), guildId()), {
 	body: commandsData,
 });
 console.log(`Successfully refreshed slash commands.`);
+process.exit(0);
