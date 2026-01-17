@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { Command } from "../commands/types";
+import type { Command } from "./types";
 
 const EXPECTED_EXTENSION = ".command.ts";
 const EXPECTED_FOLDERNAME = "commands";
