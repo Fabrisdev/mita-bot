@@ -58,6 +58,8 @@ export default {
 			return;
 		}
 
+		await interaction.guild.members.ban(user, { reason });
+
 		interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
 		);
