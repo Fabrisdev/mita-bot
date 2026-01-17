@@ -7,6 +7,7 @@ import type { Command } from "./types";
 
 export default {
 	description: "Ban a user",
+	environment: "guild",
 	options: [
 		{
 			name: "user",
@@ -30,14 +31,6 @@ export default {
 		if (user.id === interaction.client.user.id) {
 			await interaction.reply({
 				content: "No! :(",
-				flags: MessageFlags.Ephemeral,
-			});
-			return;
-		}
-
-		if (!interaction.guild) {
-			await interaction.reply({
-				content: "This command can only be run inside the server.",
 				flags: MessageFlags.Ephemeral,
 			});
 			return;
@@ -69,4 +62,4 @@ export default {
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
 		);
 	},
-} satisfies Command;
+} satisfies Command<"guild">;

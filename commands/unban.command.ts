@@ -21,6 +21,7 @@ export default {
 			required: false,
 		},
 	],
+	environment: "guild",
 	permissions: [PermissionFlagsBits.BanMembers],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
@@ -56,4 +57,4 @@ export default {
 
 		interaction.reply(`The user ${user.tag} has been unbanned!`);
 	},
-} satisfies Command;
+} satisfies Command<"guild">;
