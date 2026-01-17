@@ -1,6 +1,6 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
 import { token } from "./environment";
-import { fetchCommands } from "./handlers/commandHandler";
+import { fetchCommands } from "./handlers/commandsHandler";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.once(Events.ClientReady, (client) => {
