@@ -1,6 +1,10 @@
-import type { ChatInputCommandInteraction } from "discord.js";
+import type {
+	ApplicationCommandOptionData,
+	ChatInputCommandInteraction,
+} from "discord.js";
 
 export type Command = {
 	description: string;
+	options?: ApplicationCommandOptionData[];
 	run: (interaction: ChatInputCommandInteraction) => Promise<void>;
 };
