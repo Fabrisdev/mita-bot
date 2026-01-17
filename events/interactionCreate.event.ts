@@ -22,7 +22,7 @@ export default async (interaction: Interaction<CacheType>) => {
 		);
 		console.error(error);
 		const errorMessage =
-			"There was an error while executing this command. We've been notified about and are working on fixing it.";
+			"There was an error while executing this command. We've been notified about it and are working on fixing it.";
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp(errorMessage);
 			return;
