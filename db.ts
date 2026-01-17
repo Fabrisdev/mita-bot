@@ -1,7 +1,8 @@
 import { ConvexClient } from "convex/browser";
 import { api } from "./convex/_generated/api";
+import { convexUrl } from "./environment";
 
-const convex = new ConvexClient("https://brilliant-leopard-428.convex.cloud");
+const convex = new ConvexClient(convexUrl());
 
 export async function setAlertsChannel(guildId: string, channelId: string) {
 	await convex.mutation(api.functions.guildSettings.setAlertsChannel, {

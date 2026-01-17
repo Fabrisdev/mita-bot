@@ -16,6 +16,12 @@ export function guildId() {
 	return guildId;
 }
 
+export function convexUrl() {
+	const convexUrl = process.env.CONVEX_URL;
+	if (convexUrl === undefined) warnAndCrash("convex url");
+	return convexUrl;
+}
+
 function warnAndCrash(field: string): never {
 	console.error(
 		`Missing ${field}. Did you made sure to create a .env and populate all needed fields?`,
