@@ -1,6 +1,5 @@
 import { MessageFlags, PermissionFlagsBits } from "discord.js";
-import { convex } from "../convex";
-import { api } from "../convex/_generated/api";
+import { setAlertsChannel } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -16,10 +15,7 @@ export default {
 			return;
 		}
 		const channelId = interaction.channel.id;
-		await convex.mutation(api.functions.guildSettings.setAlertsChannel, {
-			guildId: interaction.guild.id,
-			channelId: interaction.channel.id,
-		});
+		await setAlertsChannel(interaction.guild.id, channelId);
 		await interaction.reply(
 			`The channel <#${channelId}> has been set as the alerts channel.`,
 		);
