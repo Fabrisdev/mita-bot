@@ -38,6 +38,15 @@ export default {
 			return;
 		}
 
+		const isBanned = await interaction.guild.bans.fetch(user).catch(() => null);
+		if (!isBanned) {
+			await interaction.reply({
+				content: "That user isn't banned.",
+				ephemeral: true,
+			});
+			return;
+		}
+
 		await interaction.guild.members.unban(user, reason);
 
 		interaction.reply(`The user ${user.tag} has been unbanned!`);
