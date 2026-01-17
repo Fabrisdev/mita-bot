@@ -25,7 +25,6 @@ export default {
 		const reason =
 			interaction.options.getString("reason") ?? "No reason specified";
 		await addToUserHistory(interaction.guild.id, user.id, {
-			at: Date.now(),
 			moderatorId: interaction.user.id,
 			reason,
 			type: "warn",

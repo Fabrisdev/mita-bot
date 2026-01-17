@@ -65,7 +65,6 @@ export default {
 			`Moderator ${interaction.user.tag} has kicked ${user.tag} with the reason: ${reason}`,
 		);
 		await addToUserHistory(interaction.guild.id, user.id, {
-			at: Date.now(),
 			moderatorId: interaction.user.id,
 			reason,
 			type: "kick",

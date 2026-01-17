@@ -36,12 +36,14 @@ export async function addToUserHistory(
 	return await convex.mutation(api.functions.history.addToUserHistory, {
 		guildId,
 		userId,
-		incident,
+		incident: {
+			...incident,
+			at: Date.now(),
+		},
 	});
 }
 
 type Incident = {
-	at: number;
 	type: "ban" | "unban" | "kick" | "mute" | "warn";
 	moderatorId: string;
 	reason: string;
