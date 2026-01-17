@@ -1,0 +1,62 @@
+import {
+	ApplicationCommandOptionType,
+	MessageFlags,
+	PermissionFlagsBits,
+} from "discord.js";
+import type { Command } from "./types";
+
+export default {
+	description: "Kick an user",
+	permissions: [PermissionFlagsBits.KickMembers],
+	environment: "guild",
+	options: [
+		{
+			name: "user",
+			description: "User to kick",
+			required: true,
+			type: ApplicationCommandOptionType.User,
+		},
+		{
+			name: "reason",
+			description: "Kick reason",
+			type: ApplicationCommandOptionType.String,
+		},
+	],
+	run: async (interaction) => {
+		const user = interaction.options.getUser("user", true);
+		const reason =
+			interaction.options.getString("reason") ?? "No reason specified";
+		if (user.id === interaction.client.user.id) {
+			await interaction.reply({
+				content: "No! :(",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		const member = await interaction.guild.members
+			.fetch(user.id)
+			.catch(() => null);
+
+		if (!member) {
+			await interaction.reply({
+				content: "That user does not seem to be on the server.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		if (!member.kickable) {
+			await interaction.reply({
+				content: "I can't kick that user!",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		await interaction.guild.members.kick(user, reason);
+		await interaction.reply(
+			`The user ${user.tag} has been kicked with the reason: ${reason}`,
+		);
+	},
+} satisfies Command<"guild">;
