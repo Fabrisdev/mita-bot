@@ -1,1 +1,1 @@
-export type Event = () => Promise<unknown>;
+export type Event = (payload: unknown) => Promise<unknown>;
