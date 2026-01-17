@@ -62,7 +62,7 @@ export default {
 		await interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
 		);
-		alert(
+		await alert(
 			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has banned ${user.tag} with the reason: ${reason}`,
 		);

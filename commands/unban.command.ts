@@ -47,6 +47,6 @@ export default {
 
 		await interaction.guild.members.unban(user, reason);
 
-		interaction.reply(`The user ${user.tag} has been unbanned!`);
+		await interaction.reply(`The user ${user.tag} has been unbanned!`);
 	},
 } satisfies Command<"guild">;
