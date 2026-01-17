@@ -29,6 +29,7 @@ export const addToUserHistory = mutation({
 			),
 			at: v.number(),
 			moderatorId: v.string(),
+			reason: v.string(),
 		}),
 	},
 	handler: async (ctx, args) => {
