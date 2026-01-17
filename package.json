@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "bun run index.ts",
 		"dev": "bun run --watch index.ts",
-		"deploy:commands": "bun run deployers/commandDeployer.ts"
+		"deploy:commands": "bun run commands/commandDeployer.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
