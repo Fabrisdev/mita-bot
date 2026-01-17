@@ -3,6 +3,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
+import { addToUserHistory } from "../db";
 import { showAlert } from "./alert";
 import type { Command } from "./types";
 
@@ -53,5 +54,11 @@ export default {
 			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has unbanned ${user.tag} with the reason: ${reason}`,
 		);
+		await addToUserHistory(interaction.guild.id, user.id, {
+			at: Date.now(),
+			moderatorId: interaction.user.id,
+			reason,
+			type: "unban",
+		});
 	},
 } satisfies Command<"guild">;
