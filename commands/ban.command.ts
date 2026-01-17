@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import {
+	ApplicationCommandOptionType,
+	MessageFlags,
+	PermissionFlagsBits,
+} from "discord.js";
 import type { Command } from "./types";
 
 export default {
@@ -26,6 +30,7 @@ export default {
 		if (user.id === interaction.client.user.id) {
 			await interaction.reply({
 				content: "No! :(",
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
@@ -33,7 +38,7 @@ export default {
 		if (!interaction.guild) {
 			await interaction.reply({
 				content: "This command can only be run inside the server.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
@@ -45,7 +50,7 @@ export default {
 		if (!member) {
 			await interaction.reply({
 				content: "That user does not seem to be on the server.",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
@@ -53,7 +58,7 @@ export default {
 		if (!member.bannable) {
 			await interaction.reply({
 				content: "I can't ban that user!",
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
