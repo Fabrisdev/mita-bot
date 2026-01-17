@@ -1,4 +1,4 @@
-import { client } from "..";
+import { client } from "../client";
 import { fetchEvents } from "../handlers/eventsHandler";
 
 export async function registerEvents() {
