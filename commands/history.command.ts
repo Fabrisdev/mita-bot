@@ -24,7 +24,7 @@ export default {
 
 		const message = history.map((incident) => {
 			const date = new Date(incident.at).toLocaleString();
-			return `**${incident.type.toUpperCase()}**: Issued by moderator <@${incident.moderatorId}> at ${date} with the reason: ${incident.reason}`;
+			return `- **${incident.type.toUpperCase()}**: Issued by moderator <@${incident.moderatorId}> at ${date} with the reason: ${incident.reason}`;
 		});
 		await interaction.reply(message.join("\n"));
 	},
