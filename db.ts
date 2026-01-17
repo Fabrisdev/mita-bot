@@ -9,3 +9,9 @@ export async function setAlertsChannel(guildId: string, channelId: string) {
 		channelId,
 	});
 }
+
+export async function getAlertsChannel(guildId: string) {
+	return await convex.query(api.functions.guildSettings.getByGuild, {
+		guildId,
+	});
+}
