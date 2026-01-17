@@ -10,7 +10,6 @@ const commandsData = Array.from(commands).map(([name, command]) => {
 	if (!command.options) return builder;
 
 	const json = builder.toJSON();
-	//@ts-expect-error This is not an actual error, rather Typescript not being able to confirm that the two types are actually the same.
 	json.options = command.options;
 	return json;
 });
