@@ -13,6 +13,10 @@ export default {
 			parent: category.id,
 			permissionOverwrites: [
 				{
+					id: interaction.guild.id, // @everyone
+					deny: ["ViewChannel"],
+				},
+				{
 					id: interaction.user.id,
 					allow: ["ViewChannel"],
 				},
