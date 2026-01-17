@@ -11,6 +11,12 @@ export default {
 			name: crypto.randomUUID(),
 			type: ChannelType.GuildText,
 			parent: category.id,
+			permissionOverwrites: [
+				{
+					id: interaction.user.id,
+					allow: ["ViewChannel"],
+				},
+			],
 		});
 		await interaction.reply({
 			content: `A ticket channel has been created for you at <#${category.id}>`,
