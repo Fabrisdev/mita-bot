@@ -7,7 +7,7 @@ export default {
 	permissions: [],
 	run: async (interaction) => {
 		const category = await findTicketsCategory(interaction.guild);
-		interaction.guild.channels.create({
+		const channel = await interaction.guild.channels.create({
 			name: crypto.randomUUID(),
 			type: ChannelType.GuildText,
 			parent: category.id,
@@ -19,7 +19,7 @@ export default {
 			],
 		});
 		await interaction.reply({
-			content: `A ticket channel has been created for you at <#${category.id}>`,
+			content: `A ticket channel has been created for you at <#${channel.id}>`,
 			flags: MessageFlags.Ephemeral,
 		});
 	},
