@@ -36,14 +36,6 @@ export default {
 			return;
 		}
 
-		if (!interaction.guild) {
-			await interaction.reply({
-				content: "This command can only be run inside the server.",
-				flags: MessageFlags.Ephemeral,
-			});
-			return;
-		}
-
 		const isBanned = await interaction.guild.bans.fetch(user).catch(() => null);
 		if (!isBanned) {
 			await interaction.reply({
