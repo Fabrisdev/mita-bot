@@ -1,0 +1,45 @@
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import type { Command } from "./types";
+
+export default {
+	description: "Unban a user",
+	options: [
+		{
+			name: "user",
+			description: "User to unban",
+			type: ApplicationCommandOptionType.User,
+			required: true,
+		},
+		{
+			name: "reason",
+			description: "Unban reason",
+			type: ApplicationCommandOptionType.String,
+			required: false,
+		},
+	],
+	permissions: [PermissionFlagsBits.BanMembers],
+	run: async (interaction) => {
+		const user = interaction.options.getUser("user", true);
+		const reason =
+			interaction.options.getString("reason") ?? "No reason specified";
+
+		if (user.id === interaction.client.user.id) {
+			await interaction.reply({
+				content: "Aw, how sweet of you <3",
+			});
+			return;
+		}
+
+		if (!interaction.guild) {
+			await interaction.reply({
+				content: "This command can only be run inside the server.",
+				ephemeral: true,
+			});
+			return;
+		}
+
+		await interaction.guild.members.unban(user, reason);
+
+		interaction.reply(`The user ${user.tag} has been unbanned!`);
+	},
+} satisfies Command;
