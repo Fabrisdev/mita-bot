@@ -2,7 +2,7 @@ import type { TextChannel } from "discord.js";
 import { client } from "../client";
 import { getAlertsChannel } from "../db";
 
-export async function alert(guildId: string, message: string) {
+export async function showAlert(guildId: string, message: string) {
 	const alertsChannel = await getAlertsChannel(guildId);
 	if (!alertsChannel) return;
 	const channel = await client.channels.fetch(alertsChannel);

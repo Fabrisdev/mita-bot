@@ -3,7 +3,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
-import { alert } from "./alert";
+import { showAlert } from "./alert";
 import type { Command } from "./types";
 
 export default {
@@ -62,7 +62,7 @@ export default {
 		await interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
 		);
-		await alert(
+		await showAlert(
 			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has banned ${user.tag} with the reason: ${reason}`,
 		);
