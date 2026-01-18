@@ -20,12 +20,12 @@ export default {
 			name: "channel",
 			description: "Channel where to say it",
 			type: ApplicationCommandOptionType.Channel,
-			required: true,
 		},
 	],
 	run: async (interaction) => {
 		const message = interaction.options.getString("message", true);
-		const channelId = interaction.options.getChannel("channel", true).id;
+		const channelId =
+			interaction.options.getChannel("channel")?.id ?? interaction.channelId;
 		const channel = await interaction.guild.channels.fetch(channelId);
 		if (!channel || !channel.isTextBased()) {
 			await interaction.reply({
