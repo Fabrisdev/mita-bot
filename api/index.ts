@@ -13,9 +13,19 @@ const sendMessageSchema = z.object({
 const elysia = new Elysia()
 	.get("/api/ok", "")
 	.post("/api/send-message", async ({ body }) => {
-		const parsed = sendMessageSchema.safeParse(body);
+		if (typeof body !== "string")
+			return new Response(undefined, { status: 400 });
+		let data = null;
+		try {
+			data = JSON.parse(body);
+		} catch {
+			return new Response(undefined, { status: 400 });
+		}
+		const parsed = sendMessageSchema.safeParse(data);
+		console.log(parsed);
 		if (parsed.error || parsed.data.secret !== apiSecret())
 			return new Response(undefined, { status: 400 });
+		console.log("paso verificacion");
 		const { channelId, message } = parsed.data;
 
 		try {
