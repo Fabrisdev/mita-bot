@@ -15,18 +15,16 @@ const elysia = new Elysia()
 	.post("/api/send-message", async ({ body }) => {
 		const parsed = sendMessageSchema.safeParse(body);
 		if (parsed.error || parsed.data.secret !== apiSecret())
-			return {
-				status: 400,
-			};
+			return new Response(undefined, { status: 400 });
 		const { channelId, message } = parsed.data;
 
 		try {
 			const channel = await client.channels.fetch(channelId);
 			if (!channel || channel.type !== ChannelType.GuildText)
-				return { status: 400 };
+				return new Response(undefined, { status: 400 });
 			channel.send(message);
 		} catch {
-			return { status: 400 };
+			return new Response(undefined, { status: 400 });
 		}
 	});
 
