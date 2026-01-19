@@ -22,6 +22,12 @@ export function convexUrl() {
 	return convexUrl;
 }
 
+export function apiPort() {
+	const apiPort = process.env.API_PORT;
+	if (apiPort === undefined) warnAndCrash("api port");
+	return apiPort;
+}
+
 function warnAndCrash(field: string): never {
 	console.error(
 		`Missing ${field}. Did you made sure to create a .env and populate all needed fields?`,
