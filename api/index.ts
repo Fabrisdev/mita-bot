@@ -22,7 +22,6 @@ const elysia = new Elysia()
 			return new Response(undefined, { status: 400 });
 		}
 		const parsed = sendMessageSchema.safeParse(data);
-		console.log(parsed);
 		if (parsed.error || parsed.data.secret !== apiSecret())
 			return new Response(undefined, { status: 400 });
 		console.log("paso verificacion");
