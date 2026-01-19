@@ -28,6 +28,12 @@ export function apiPort() {
 	return apiPort;
 }
 
+export function apiSecret() {
+	const apiSecret = process.env.API_SECRET;
+	if (apiSecret === undefined) warnAndCrash("api secret");
+	return apiSecret;
+}
+
 function warnAndCrash(field: string): never {
 	console.error(
 		`Missing ${field}. Did you made sure to create a .env and populate all needed fields?`,
