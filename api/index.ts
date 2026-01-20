@@ -24,7 +24,6 @@ const elysia = new Elysia()
 		const parsed = sendMessageSchema.safeParse(data);
 		if (parsed.error || parsed.data.secret !== apiSecret())
 			return new Response(undefined, { status: 400 });
-		console.log("paso verificacion");
 		const { channelId, message } = parsed.data;
 
 		try {
