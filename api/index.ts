@@ -1,6 +1,6 @@
 import { bearer } from "@elysiajs/bearer";
 import { ChannelType } from "discord.js";
-import Elysia, { t } from "elysia";
+import Elysia, { status, t } from "elysia";
 import { client } from "../client";
 import { apiPort, apiSecret } from "../environment";
 
@@ -11,28 +11,23 @@ const sendMessageSchema = t.Object({
 
 const elysia = new Elysia()
 	.use(bearer())
-	.onBeforeHandle(({ bearer, set }) => {
-		if (!bearer || bearer !== apiSecret()) {
-			set.status = "Unauthorized";
-			return;
-		}
+	.onBeforeHandle(({ bearer }) => {
+		if (!bearer || bearer !== apiSecret()) return status("Unauthorized");
 	})
 	.get("/api/ok", "")
 	.post(
 		"/api/send-message",
-		async ({ body, set }) => {
+		async ({ body }) => {
 			const { channelId, message } = body;
 
 			try {
 				const channel = await client.channels.fetch(channelId);
-				if (!channel || channel.type !== ChannelType.GuildText) {
-					set.status = "Bad Request";
-					return;
-				}
+				if (!channel || channel.type !== ChannelType.GuildText)
+					return status("Bad Request");
 
 				channel.send(message);
 			} catch {
-				set.status = "Bad Request";
+				return status("Bad Request");
 			}
 		},
 		{
