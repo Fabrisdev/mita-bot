@@ -7,4 +7,9 @@ export namespace ChannelModel {
 	});
 
 	export type SendBody = typeof SendBody.static;
+
+	export const GetAllParams = t.Object({
+		guildId: t.String(),
+	});
+	export type GetAllParams = typeof GetAllParams.static;
 }

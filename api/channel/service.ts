@@ -14,4 +14,13 @@ export namespace ChannelService {
 			return status("Bad Request");
 		}
 	}
+
+	export async function getAll({ guildId }: ChannelModel.GetAllParams) {
+		const guild = await client.guilds.fetch(guildId);
+		const channels = guild.channels.cache.map((channel) => ({
+			id: channel.id,
+			name: channel.name,
+		}));
+		return JSON.stringify(channels);
+	}
 }
