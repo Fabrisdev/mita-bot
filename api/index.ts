@@ -6,11 +6,11 @@ import { StatusController } from "./status";
 
 const elysia = new Elysia({ prefix: "/api" })
 	.use(bearer())
+	.use(StatusController)
 	.onBeforeHandle(({ bearer }) => {
 		if (!bearer || bearer !== apiSecret()) return status("Unauthorized");
 	})
-	.use(ChannelController)
-	.use(StatusController);
+	.use(ChannelController);
 
 export function startApiService() {
 	const port = apiPort();
