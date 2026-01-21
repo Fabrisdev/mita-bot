@@ -1,22 +1,20 @@
 import { ChannelType } from "discord.js";
-import Elysia from "elysia";
-import z from "zod";
+import Elysia, { t } from "elysia";
 import { client } from "../client";
 import { apiPort, apiSecret } from "../environment";
 
-const sendMessageSchema = z.object({
-	channelId: z.string(),
-	message: z.string(),
-	secret: z.string(),
+const sendMessageSchema = t.Object({
+	channelId: t.String(),
+	message: t.String(),
+	secret: t.String(),
 });
 
-const elysia = new Elysia()
-	.get("/api/ok", "")
-	.post("/api/send-message", async ({ body }) => {
-		const parsed = sendMessageSchema.safeParse(body);
-		if (parsed.error || parsed.data.secret !== apiSecret())
+const elysia = new Elysia().get("/api/ok", "").post(
+	"/api/send-message",
+	async ({ body }) => {
+		if (body.secret !== apiSecret())
 			return new Response(undefined, { status: 400 });
-		const { channelId, message } = parsed.data;
+		const { channelId, message } = body;
 
 		try {
 			const channel = await client.channels.fetch(channelId);
@@ -26,7 +24,11 @@ const elysia = new Elysia()
 		} catch {
 			return new Response(undefined, { status: 400 });
 		}
-	});
+	},
+	{
+		body: sendMessageSchema,
+	},
+);
 
 export function startApiService() {
 	const port = apiPort();
