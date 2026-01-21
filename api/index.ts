@@ -14,18 +14,24 @@ const elysia = new Elysia()
 	.get("/api/ok", "")
 	.post(
 		"/api/send-message",
-		async ({ bearer, body }) => {
-			if (!bearer || bearer !== apiSecret())
-				return new Response(undefined, { status: 400 });
+		async ({ bearer, body, set }) => {
+			if (!bearer || bearer !== apiSecret()) {
+				set.status = "Unauthorized";
+				return;
+			}
+
 			const { channelId, message } = body;
 
 			try {
 				const channel = await client.channels.fetch(channelId);
-				if (!channel || channel.type !== ChannelType.GuildText)
-					return new Response(undefined, { status: 400 });
+				if (!channel || channel.type !== ChannelType.GuildText) {
+					set.status = "Bad Request";
+					return;
+				}
+
 				channel.send(message);
 			} catch {
-				return new Response(undefined, { status: 400 });
+				set.status = "Bad Request";
 			}
 		},
 		{
