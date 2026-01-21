@@ -9,14 +9,14 @@ const sendMessageSchema = t.Object({
 	message: t.String(),
 });
 
-const elysia = new Elysia()
+const elysia = new Elysia({ prefix: "/api" })
 	.use(bearer())
 	.onBeforeHandle(({ bearer }) => {
 		if (!bearer || bearer !== apiSecret()) return status("Unauthorized");
 	})
-	.get("/api/ok", "")
+	.get("/ok", "")
 	.post(
-		"/api/send-message",
+		"/send-message",
 		async ({ body }) => {
 			const { channelId, message } = body;
 
