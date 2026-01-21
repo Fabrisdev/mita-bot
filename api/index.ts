@@ -13,7 +13,7 @@ const elysia = new Elysia()
 	.use(bearer())
 	.onBeforeHandle(({ bearer, set }) => {
 		if (!bearer || bearer !== apiSecret()) {
-			set.status = 401;
+			set.status = "Unauthorized";
 			return;
 		}
 	})
