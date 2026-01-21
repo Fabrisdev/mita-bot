@@ -11,15 +11,16 @@ const sendMessageSchema = t.Object({
 
 const elysia = new Elysia()
 	.use(bearer())
+	.onBeforeHandle(({ bearer, set }) => {
+		if (!bearer || bearer !== apiSecret()) {
+			set.status = 401;
+			return;
+		}
+	})
 	.get("/api/ok", "")
 	.post(
 		"/api/send-message",
-		async ({ bearer, body, set }) => {
-			if (!bearer || bearer !== apiSecret()) {
-				set.status = "Unauthorized";
-				return;
-			}
-
+		async ({ body, set }) => {
 			const { channelId, message } = body;
 
 			try {
