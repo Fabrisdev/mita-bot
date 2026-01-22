@@ -1,6 +1,7 @@
 import { ChannelType } from "discord.js";
 import { status } from "elysia";
 import { client } from "../../client";
+import type { UserData } from "../types";
 import type { ChannelModel } from "./model";
 
 export namespace ChannelService {
@@ -15,7 +16,9 @@ export namespace ChannelService {
 		}
 	}
 
-	export async function getAll({ guildId }: ChannelModel.GetAllParams) {
+	export async function getAll({
+		guildId,
+	}: ChannelModel.GetAllParams & UserData) {
 		const guild = await client.guilds.fetch(guildId).catch(() => null);
 		if (guild === null) return status("Bad Request");
 		const channels = guild.channels.cache.map((channel) => ({
