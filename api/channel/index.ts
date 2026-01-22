@@ -1,10 +1,8 @@
-import bearer from "@elysiajs/bearer";
 import Elysia from "elysia";
 import { ChannelModel } from "./model";
 import { ChannelService } from "./service";
 
 export const ChannelController = new Elysia({ prefix: "/channel" })
-	.use(bearer())
 	.post("/send", ({ body }) => ChannelService.send(body), {
 		body: ChannelModel.SendBody,
 	})
