@@ -1,14 +1,19 @@
 import { bearer } from "@elysiajs/bearer";
-import Elysia, { status } from "elysia";
+import Elysia, { status, t } from "elysia";
 import { jwtVerify } from "jose";
 import { apiPort, jwtSecret } from "../environment";
 import { ChannelController } from "./channel";
 import { isAdminAt } from "./helpers";
 import { StatusController } from "./status";
 
-const elysia = new Elysia({ prefix: "/api/:guildId" })
+const elysia = new Elysia({ prefix: "/api" })
 	.use(bearer())
 	.use(StatusController)
+	.guard({
+		params: t.Object({
+			guildId: t.String(),
+		}),
+	})
 	.onBeforeHandle(async ({ bearer, params }) => {
 		if (!bearer) return status("Unauthorized");
 		const verifyResult = await jwtVerify(bearer, jwtSecret()).catch(() => null);
