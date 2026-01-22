@@ -2,6 +2,7 @@ import { bearer } from "@elysiajs/bearer";
 import Elysia, { status } from "elysia";
 import { jwtVerify } from "jose";
 import { apiPort, jwtSecret } from "../environment";
+import { withUserId } from "./auth";
 import { ChannelController } from "./channel";
 import { StatusController } from "./status";
 
@@ -13,13 +14,7 @@ const elysia = new Elysia({ prefix: "/api" })
 		const verifyResult = await jwtVerify(bearer, jwtSecret()).catch(() => null);
 		if (verifyResult === null) return status("Unauthorized");
 	})
-	.resolve(async ({ bearer }) => {
-		const verifyResult = await jwtVerify(bearer as string, jwtSecret());
-		const { id } = verifyResult.payload as { id: string };
-		return {
-			userId: id,
-		};
-	})
+	.resolve(withUserId)
 	.use(ChannelController);
 
 export function startApiService() {
