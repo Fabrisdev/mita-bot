@@ -4,11 +4,16 @@ import { client } from "../../client";
 import type { ChannelModel } from "./model";
 
 export namespace ChannelService {
-	export async function send({ channelId, message }: ChannelModel.SendBody) {
+	export async function send({
+		channelId,
+		message,
+		guildId,
+	}: ChannelModel.SendBody & { guildId: string }) {
 		try {
 			const channel = await client.channels.fetch(channelId);
 			if (!channel || channel.type !== ChannelType.GuildText)
 				throw status("Bad Request");
+			if (guildId !== channel.guildId) return status("Forbidden");
 			channel.send(message);
 		} catch {
 			return status("Bad Request");

@@ -8,7 +8,16 @@ export const ChannelController = new Elysia({ prefix: "/channel" })
 			guildId: t.String(),
 		}),
 	})
-	.post("/send", ({ body }) => ChannelService.send(body), {
-		body: ChannelModel.SendBody,
-	})
+	.post(
+		"/send",
+		({ body, params }) =>
+			ChannelService.send({
+				channelId: body.channelId,
+				guildId: params.guildId,
+				message: body.message,
+			}),
+		{
+			body: ChannelModel.SendBody,
+		},
+	)
 	.get("/", ({ params }) => ChannelService.getAll({ guildId: params.guildId }));
