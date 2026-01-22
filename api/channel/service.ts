@@ -1,11 +1,15 @@
-import { ChannelType, PermissionFlagsBits } from "discord.js";
+import { ChannelType } from "discord.js";
 import { status } from "elysia";
 import { client } from "../../client";
+import { isAdminAt } from "../helpers";
 import type { UserData } from "../types";
 import type { ChannelModel } from "./model";
 
 export namespace ChannelService {
-	export async function send({ channelId, message }: ChannelModel.SendBody) {
+	export async function send({
+		channelId,
+		message,
+	}: ChannelModel.SendBody & UserData) {
 		try {
 			const channel = await client.channels.fetch(channelId);
 			if (!channel || channel.type !== ChannelType.GuildText)
@@ -29,14 +33,4 @@ export namespace ChannelService {
 		}));
 		return JSON.stringify(channels);
 	}
-}
-
-async function isAdminAt(guildId: string, userId: string) {
-	const guild = await client.guilds.fetch(guildId).catch(() => null);
-	if (!guild) return false;
-
-	const member = await guild.members.fetch(userId).catch(() => null);
-	if (!member) return false;
-
-	return member.permissions.has(PermissionFlagsBits.Administrator);
 }
