@@ -28,6 +28,12 @@ export function apiPort() {
 	return apiPort;
 }
 
+export function jwtSecret() {
+	const jwtSecret = process.env.JWT_SECRET;
+	if (jwtSecret === undefined) warnAndCrash("jwt secret");
+	return jwtSecret;
+}
+
 function warnAndCrash(field: string): never {
 	console.error(
 		`Missing ${field}. Did you made sure to create a .env and populate all needed fields?`,
