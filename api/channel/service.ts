@@ -1,4 +1,4 @@
-import { ChannelType } from "discord.js";
+import { ChannelType, PermissionFlagsBits } from "discord.js";
 import { status } from "elysia";
 import { client } from "../../client";
 import type { UserData } from "../types";
@@ -18,7 +18,9 @@ export namespace ChannelService {
 
 	export async function getAll({
 		guildId,
+		userId,
 	}: ChannelModel.GetAllParams & UserData) {
+		if (!isAdminAt(guildId, userId)) return status("Unauthorized");
 		const guild = await client.guilds.fetch(guildId).catch(() => null);
 		if (guild === null) return status("Bad Request");
 		const channels = guild.channels.cache.map((channel) => ({
@@ -27,4 +29,14 @@ export namespace ChannelService {
 		}));
 		return JSON.stringify(channels);
 	}
+}
+
+async function isAdminAt(guildId: string, userId: string) {
+	const guild = await client.guilds.fetch(guildId).catch(() => null);
+	if (!guild) return false;
+
+	const member = await guild.members.fetch(userId).catch(() => null);
+	if (!member) return false;
+
+	return member.permissions.has(PermissionFlagsBits.Administrator);
 }
