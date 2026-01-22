@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from "discord.js";
+import { t } from "elysia";
 import { client } from "../client";
 
 export async function isAdminAt(guildId: string, userId: string) {
@@ -10,3 +11,9 @@ export async function isAdminAt(guildId: string, userId: string) {
 
 	return member.permissions.has(PermissionFlagsBits.Administrator);
 }
+
+export const GuildIdGuard = {
+	params: t.Object({
+		guildId: t.String(),
+	}),
+};

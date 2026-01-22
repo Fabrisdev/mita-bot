@@ -1,13 +1,10 @@
-import Elysia, { t } from "elysia";
+import Elysia from "elysia";
+import { GuildIdGuard } from "../helpers";
 import { ChannelModel } from "./model";
 import { ChannelService } from "./service";
 
 export const ChannelController = new Elysia({ prefix: "/channel" })
-	.guard({
-		params: t.Object({
-			guildId: t.String(),
-		}),
-	})
+	.guard(GuildIdGuard)
 	.post(
 		"/send",
 		({ body, params }) =>
