@@ -1,14 +1,24 @@
 import { bearer } from "@elysiajs/bearer";
 import Elysia, { status } from "elysia";
-import { apiPort, apiSecret } from "../environment";
+import { jwtVerify } from "jose";
+import { apiPort, jwtSecret } from "../environment";
 import { ChannelController } from "./channel";
 import { StatusController } from "./status";
 
 const elysia = new Elysia({ prefix: "/api" })
 	.use(bearer())
 	.use(StatusController)
-	.onBeforeHandle(({ bearer }) => {
-		if (!bearer || bearer !== apiSecret()) return status("Unauthorized");
+	.onBeforeHandle(async ({ bearer }) => {
+		if (!bearer) return status("Unauthorized");
+		const verifyResult = await jwtVerify(bearer, jwtSecret()).catch(() => null);
+		if (verifyResult === null) return status("Unauthorized");
+	})
+	.resolve(async ({ bearer }) => {
+		const verifyResult = await jwtVerify(bearer as string, jwtSecret());
+		const { id } = verifyResult.payload as { id: string };
+		return {
+			userId: id,
+		};
 	})
 	.use(ChannelController);
 
