@@ -31,7 +31,7 @@ export function apiPort() {
 export function jwtSecret() {
 	const jwtSecret = process.env.JWT_SECRET;
 	if (jwtSecret === undefined) warnAndCrash("jwt secret");
-	return jwtSecret;
+	return new TextEncoder().encode(jwtSecret);
 }
 
 function warnAndCrash(field: string): never {
