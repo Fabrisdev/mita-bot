@@ -1,4 +1,5 @@
 import { bearer } from "@elysiajs/bearer";
+import { cors } from "@elysiajs/cors";
 import Elysia, { status } from "elysia";
 import { jwtVerify } from "jose";
 import { apiPort, jwtSecret } from "../environment";
@@ -8,6 +9,7 @@ import { GuildIdGuard, isAdminAt } from "./helpers";
 import { StatusController } from "./status";
 
 const elysia = new Elysia({ prefix: "/api" })
+	.use(cors())
 	.use(bearer())
 	.use(StatusController)
 	.use(GuildController)
