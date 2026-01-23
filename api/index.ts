@@ -3,12 +3,14 @@ import Elysia, { status } from "elysia";
 import { jwtVerify } from "jose";
 import { apiPort, jwtSecret } from "../environment";
 import { ChannelController } from "./channel";
+import { GuildController } from "./guild";
 import { GuildIdGuard, isAdminAt } from "./helpers";
 import { StatusController } from "./status";
 
 const elysia = new Elysia({ prefix: "/api" })
 	.use(bearer())
 	.use(StatusController)
+	.use(GuildController)
 	.guard(GuildIdGuard)
 	.onBeforeHandle(async ({ bearer, params }) => {
 		if (!bearer) return status("Unauthorized");
