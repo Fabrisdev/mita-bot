@@ -23,10 +23,12 @@ export namespace ChannelService {
 	export async function getAll({ guildId }: ChannelModel.GetAllParams) {
 		const guild = await client.guilds.fetch(guildId).catch(() => null);
 		if (guild === null) return status("Bad Request");
-		const channels = guild.channels.cache.map((channel) => ({
-			id: channel.id,
-			name: channel.name,
-		}));
+		const channels = guild.channels.cache
+			.filter((channel) => channel.type === ChannelType.GuildText)
+			.map((channel) => ({
+				id: channel.id,
+				name: channel.name,
+			}));
 		return JSON.stringify(channels);
 	}
 }
