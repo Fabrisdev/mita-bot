@@ -1,4 +1,5 @@
 import { client } from "../../client";
+import { isAdminAt } from "../helpers";
 import type { GuildModel } from "./model";
 
 export namespace GuildService {
@@ -7,6 +8,7 @@ export namespace GuildService {
 			client.guilds.cache.map(async (guild) => {
 				const isMember = guild.members.fetch(userId).catch(() => false);
 				if (!isMember) return null;
+				if (!isAdminAt(guild.id, userId)) return null;
 				return {
 					name: guild.name,
 					id: guild.id,
