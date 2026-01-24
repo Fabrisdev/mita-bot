@@ -14,6 +14,7 @@ export namespace ChannelService {
 			if (!channel || channel.type !== ChannelType.GuildText)
 				throw status("Bad Request");
 			if (guildId !== channel.guildId) return status("Forbidden");
+			if (message.trim().length === 0) return status("Bad Request");
 			channel.send(message);
 		} catch {
 			return status("Bad Request");
