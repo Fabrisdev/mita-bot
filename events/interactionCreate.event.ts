@@ -1,5 +1,7 @@
 import {
+	type ButtonInteraction,
 	type CacheType,
+	type ChatInputCommandInteraction,
 	type Interaction,
 	MessageFlags,
 	PermissionsBitField,
@@ -9,7 +11,16 @@ import { fetchCommands } from "../commands/handler";
 const commands = await fetchCommands();
 
 export default async (interaction: Interaction<CacheType>) => {
-	if (!interaction.isChatInputCommand()) return;
+	if (interaction.isButton()) return handleButtonInteraction(interaction);
+	if (interaction.isChatInputCommand())
+		return handleChatInputCommand(interaction);
+};
+
+function handleButtonInteraction(interaction: ButtonInteraction<CacheType>) {}
+
+async function handleChatInputCommand(
+	interaction: ChatInputCommandInteraction<CacheType>,
+) {
 	const command = commands.get(interaction.commandName);
 	if (command === undefined) {
 		console.error(
@@ -58,7 +69,7 @@ export default async (interaction: Interaction<CacheType>) => {
 		}
 		await interaction.reply(errorMessage);
 	}
-};
+}
 
 function permissionBitToName(permission: bigint) {
 	const name =
