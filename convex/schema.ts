@@ -26,7 +26,6 @@ export default defineSchema({
 	}).index("by_user_and_guild", ["guildId", "userId"]),
 	tickets: defineTable({
 		guildId: v.string(),
-		channelId: v.string(),
 		ownerId: v.string(),
 		status: v.union(v.literal("open"), v.literal("closed")),
 		closedAt: v.optional(v.number()),
