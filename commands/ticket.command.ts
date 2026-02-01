@@ -1,4 +1,5 @@
 import { ChannelType, type Guild, MessageFlags } from "discord.js";
+import { Ticket } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -7,6 +8,10 @@ export default {
 	permissions: [],
 	run: async (interaction) => {
 		const category = await findTicketsCategory(interaction.guild);
+		const id = await Ticket.open({
+			guildId: interaction.guild.id,
+			ownerId: interaction.user.id,
+		});
 		const channel = await interaction.guild.channels.create({
 			name: crypto.randomUUID(),
 			type: ChannelType.GuildText,
