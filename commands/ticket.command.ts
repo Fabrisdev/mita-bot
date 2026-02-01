@@ -1,4 +1,5 @@
 import {
+	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -26,7 +27,13 @@ export default {
 			name: id,
 		});
 		const closeButton = createCloseButton(id);
-
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+			closeButton,
+		);
+		await channel.send({
+			content: `Ticket opened by <@${interaction.user.id}>`,
+			components: [row],
+		});
 		await interaction.reply({
 			content: `A ticket channel has been created for you at <#${channel.id}>`,
 			flags: MessageFlags.Ephemeral,
