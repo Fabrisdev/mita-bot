@@ -1,5 +1,6 @@
 import { ConvexClient } from "convex/browser";
 import { api } from "./convex/_generated/api";
+import type { Id } from "./convex/_generated/dataModel";
 import { convexUrl } from "./environment";
 
 const convex = new ConvexClient(convexUrl());
@@ -48,3 +49,23 @@ type Incident = {
 	moderatorId: string;
 	reason: string;
 };
+
+export namespace Ticket {
+	export async function open({
+		guildId,
+		ownerId,
+	}: {
+		guildId: string;
+		ownerId: string;
+	}) {
+		return await convex.mutation(api.functions.tickets.openTicket, {
+			guildId,
+			ownerId,
+		});
+	}
+	export async function close(ticketId: Id<"tickets">) {
+		return await convex.mutation(api.functions.tickets.closeTicket, {
+			ticketId,
+		});
+	}
+}
