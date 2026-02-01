@@ -1,4 +1,11 @@
-import { ChannelType, type Guild, MessageFlags } from "discord.js";
+import {
+	ButtonBuilder,
+	ButtonStyle,
+	ChannelType,
+	type Guild,
+	MessageFlags,
+} from "discord.js";
+import type { Id } from "../convex/_generated/dataModel";
 import { Ticket } from "../db";
 import type { Command } from "./types";
 
@@ -18,6 +25,8 @@ export default {
 			userId: interaction.user.id,
 			name: id,
 		});
+		const closeButton = createCloseButton(id);
+
 		await interaction.reply({
 			content: `A ticket channel has been created for you at <#${channel.id}>`,
 			flags: MessageFlags.Ephemeral,
@@ -73,4 +82,11 @@ async function createChannel({
 			},
 		],
 	});
+}
+
+function createCloseButton(ticketId: Id<"tickets">) {
+	return new ButtonBuilder()
+		.setCustomId(`close-ticket:${ticketId}`)
+		.setLabel("Close ticket")
+		.setStyle(ButtonStyle.Danger);
 }
