@@ -7,16 +7,24 @@ import {
 	PermissionsBitField,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
+import type { Id } from "../convex/_generated/dataModel";
+import { Ticket } from "../db";
 
 const commands = await fetchCommands();
 
 export default async (interaction: Interaction<CacheType>) => {
-	if (interaction.isButton()) return handleButtonInteraction(interaction);
+	if (interaction.isButton()) return await handleButtonInteraction(interaction);
 	if (interaction.isChatInputCommand())
-		return handleChatInputCommand(interaction);
+		return await handleChatInputCommand(interaction);
 };
 
-function handleButtonInteraction(interaction: ButtonInteraction<CacheType>) {}
+async function handleButtonInteraction(
+	interaction: ButtonInteraction<CacheType>,
+) {
+	if (!interaction.customId.startsWith("close-ticket:")) return;
+	const id = interaction.customId.split(":")[1] as Id<"tickets">;
+	await Ticket.close(id);
+}
 
 async function handleChatInputCommand(
 	interaction: ChatInputCommandInteraction<CacheType>,
