@@ -31,4 +31,10 @@ export default defineSchema({
 		status: v.union(v.literal("open"), v.literal("closed")),
 		closedAt: v.optional(v.number()),
 	}).index("by_guild", ["guildId"]),
+	ticketMessages: defineTable({
+		ticketId: v.id("tickets"),
+		authorId: v.string(),
+		content: v.string(),
+		sentAt: v.number(),
+	}).index("by_ticket", ["ticketId"]),
 });
