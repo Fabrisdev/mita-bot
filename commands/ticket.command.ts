@@ -58,7 +58,7 @@ async function createChannel({
 	userId: string;
 	name: string;
 }) {
-	await guild.channels.create({
+	return await guild.channels.create({
 		name,
 		type: ChannelType.GuildText,
 		parent: categoryId,
