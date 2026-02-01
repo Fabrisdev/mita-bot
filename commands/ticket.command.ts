@@ -12,20 +12,11 @@ export default {
 			guildId: interaction.guild.id,
 			ownerId: interaction.user.id,
 		});
-		const channel = await interaction.guild.channels.create({
-			name: crypto.randomUUID(),
-			type: ChannelType.GuildText,
-			parent: category.id,
-			permissionOverwrites: [
-				{
-					id: interaction.guild.id, // @everyone
-					deny: ["ViewChannel"],
-				},
-				{
-					id: interaction.user.id,
-					allow: ["ViewChannel"],
-				},
-			],
+		const channel = await createChannel({
+			categoryId: category.id,
+			guild: interaction.guild,
+			userId: interaction.user.id,
+			name: id,
 		});
 		await interaction.reply({
 			content: `A ticket channel has been created for you at <#${channel.id}>`,
@@ -54,4 +45,32 @@ async function findTicketsCategory(guild: Guild) {
 		return newCategory;
 	}
 	return category;
+}
+
+async function createChannel({
+	guild,
+	categoryId,
+	userId,
+	name,
+}: {
+	guild: Guild;
+	categoryId: string;
+	userId: string;
+	name: string;
+}) {
+	await guild.channels.create({
+		name,
+		type: ChannelType.GuildText,
+		parent: categoryId,
+		permissionOverwrites: [
+			{
+				id: guild.id, // @everyone
+				deny: ["ViewChannel"],
+			},
+			{
+				id: userId,
+				allow: ["ViewChannel"],
+			},
+		],
+	});
 }
