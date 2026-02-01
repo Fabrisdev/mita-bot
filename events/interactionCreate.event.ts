@@ -39,6 +39,7 @@ async function handleButtonInteraction(
 		ticketId: id,
 		messages,
 	});
+	await interaction.channel?.delete();
 }
 
 async function handleChatInputCommand(
