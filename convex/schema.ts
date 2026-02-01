@@ -29,5 +29,6 @@ export default defineSchema({
 		channelId: v.string(),
 		ownerId: v.string(),
 		status: v.union(v.literal("open"), v.literal("closed")),
+		closedAt: v.optional(v.number()),
 	}).index("by_guild", ["guildId"]),
 });
