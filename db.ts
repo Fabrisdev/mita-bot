@@ -84,4 +84,10 @@ export namespace Ticket {
 			ticketId,
 		});
 	}
+
+	export async function all(guildId: string) {
+		return await convex.query(api.functions.tickets.getTicketsFromGuild, {
+			guildId,
+		});
+	}
 }
