@@ -1,4 +1,5 @@
 import { ConvexClient } from "convex/browser";
+import { client } from "./client";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
 import { convexUrl } from "./environment";
@@ -86,8 +87,36 @@ export namespace Ticket {
 	}
 
 	export async function all(guildId: string) {
-		return await convex.query(api.functions.tickets.getTicketsFromGuild, {
-			guildId,
-		});
+		const tickets = await convex.query(
+			api.functions.tickets.getTicketsFromGuild,
+			{
+				guildId,
+			},
+		);
+		const usersInfo = new Map<string, UserInfo>();
+		for (const ticket of tickets) {
+			for (const message of ticket.messages) {
+				if (!usersInfo.has(message.authorId)) {
+					const userInfo = await getUserInfo(message.authorId);
+					usersInfo.set(message.authorId, userInfo);
+				}
+				(message as unknown as object & { user: UserInfo }).user =
+					usersInfo.get(message.authorId) as UserInfo;
+			}
+		}
+		return tickets;
 	}
 }
+
+async function getUserInfo(userId: string) {
+	const user = await client.users.fetch(userId);
+	return {
+		name: user.username,
+		icon: user.avatarURL(),
+	};
+}
+
+type UserInfo = {
+	icon: string | null;
+	name: string;
+};
