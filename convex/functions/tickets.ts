@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 
 export const openTicket = mutation({
 	args: {
@@ -23,5 +23,17 @@ export const closeTicket = mutation({
 		await ctx.db.patch("tickets", args.ticketId, {
 			status: "closed",
 		});
+	},
+});
+
+export const getTicketsFromGuild = query({
+	args: {
+		guildId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query("tickets")
+			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+			.collect();
 	},
 });
