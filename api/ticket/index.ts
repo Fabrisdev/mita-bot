@@ -5,7 +5,7 @@ import { jwtSecret } from "../../environment";
 import { isAdminAt } from "../helpers";
 import { TicketService } from "./service";
 
-export const ChannelController = new Elysia({ prefix: "/:guildId/ticket" })
+export const TicketController = new Elysia({ prefix: "/:guildId/ticket" })
 	.use(bearer())
 	.onBeforeHandle(async ({ bearer, params }) => {
 		if (!bearer) return status("Unauthorized");
