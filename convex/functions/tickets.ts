@@ -42,6 +42,9 @@ export const getTicketsFromGuild = query({
 				q.or(...ticketsIds.map((id) => q.eq(q.field("ticketId"), id))),
 			)
 			.collect();
-		return tickets.map((ticket) => ({ ...ticket, messages }));
+		return tickets.map((ticket) => ({
+			...ticket,
+			messages: messages.filter((message) => message.ticketId === ticket._id),
+		}));
 	},
 });
