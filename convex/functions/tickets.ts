@@ -31,9 +31,17 @@ export const getTicketsFromGuild = query({
 		guildId: v.string(),
 	},
 	handler: async (ctx, args) => {
-		return await ctx.db
+		const tickets = await ctx.db
 			.query("tickets")
 			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
 			.collect();
+		const ticketsIds = tickets.map((ticket) => ticket._id);
+		const messages = await ctx.db
+			.query("ticketMessages")
+			.filter((q) =>
+				q.or(...ticketsIds.map((id) => q.eq(q.field("ticketId"), id))),
+			)
+			.collect();
+		return tickets.map((ticket) => ({ ...ticket, messages }));
 	},
 });
