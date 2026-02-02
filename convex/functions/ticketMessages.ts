@@ -23,3 +23,15 @@ export const storeMessages = mutation({
 		}
 	},
 });
+
+export const getMessages = mutation({
+	args: {
+		ticketId: v.id("tickets"),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query("ticketMessages")
+			.withIndex("by_ticket", (q) => q.eq("ticketId", args.ticketId))
+			.collect();
+	},
+});
