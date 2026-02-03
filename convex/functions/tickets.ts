@@ -22,6 +22,7 @@ export const closeTicket = mutation({
 	handler: async (ctx, args) => {
 		await ctx.db.patch("tickets", args.ticketId, {
 			status: "closed",
+			closedAt: Date.now(),
 		});
 	},
 });
