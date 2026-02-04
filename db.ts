@@ -71,17 +71,17 @@ export namespace Ticket {
 	}
 	export async function store({
 		ticketId,
-		messages,
+		message,
 	}: {
 		ticketId: Id<"tickets">;
-		messages: {
+		message: {
 			authorId: string;
 			content: string;
 			sentAt: number;
-		}[];
+		};
 	}) {
-		return await convex.mutation(api.functions.ticketMessages.storeMessages, {
-			messages,
+		return await convex.mutation(api.functions.ticketMessages.storeMessage, {
+			message,
 			ticketId,
 		});
 	}
