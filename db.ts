@@ -115,7 +115,10 @@ export namespace Ticket {
 		return (
 			await Promise.all(
 				ticketIds.flatMap(async (id) => {
-					const channel = await client.channels.fetch(id);
+					const guild = await client.guilds.fetch(guildId);
+					const channel = guild.channels.cache.find(
+						(channel) => channel.name === id,
+					);
 					if (channel) return { channelId: channel.id, ticketId: id };
 					return null;
 				}),
