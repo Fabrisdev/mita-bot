@@ -24,5 +24,5 @@ export namespace Cache {
 	}
 }
 
-export type Ticket =
+type Ticket =
 	(typeof api.functions.tickets.getTicketsFromGuild._returnType)[number];
