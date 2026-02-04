@@ -68,9 +68,13 @@ export namespace Ticket {
 		return ticket;
 	}
 	export async function close(ticketId: Id<"tickets">) {
-		return await convex.mutation(api.functions.tickets.closeTicket, {
+		const ticket = (await convex.mutation(api.functions.tickets.closeTicket, {
 			ticketId,
-		});
+		})) as TicketType;
+		Cache.update("tickets", (tickets) =>
+			tickets.map((t) => (t._id === ticket._id ? ticket : t)),
+		);
+		return ticket;
 	}
 	export async function store({
 		ticketId,
