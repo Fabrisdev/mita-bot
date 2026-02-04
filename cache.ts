@@ -15,13 +15,6 @@ export namespace Cache {
 	export function read<K extends keyof Cache>(key: K) {
 		return cache[key];
 	}
-	export function update<K extends keyof Cache>(
-		key: K,
-		updater: (current: Cache[K]) => Cache[K],
-	) {
-		const current = cache[key];
-		cache[key] = updater(current);
-	}
 }
 
 type Ticket =
