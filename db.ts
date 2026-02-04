@@ -86,14 +86,13 @@ export namespace Ticket {
 		});
 	}
 
-	export async function rawAll(guildId: string) {
-		return await convex.query(api.functions.tickets.getTicketsFromGuild, {
-			guildId,
-		});
-	}
-
 	export async function all(guildId: string) {
-		const tickets = await rawAll(guildId);
+		const tickets = await convex.query(
+			api.functions.tickets.getTicketsFromGuild,
+			{
+				guildId,
+			},
+		);
 		const usersInfo = new Map<string, UserInfo>();
 		for (const ticket of tickets) {
 			for (const message of ticket.messages) {
@@ -109,14 +108,11 @@ export namespace Ticket {
 	}
 
 	export async function channelsFrom(guildId: string) {
-		console.time("All");
-		const tickets = await rawAll(guildId);
-		console.timeEnd("All");
+		const tickets = await all(guildId);
 		const ticketIds = tickets
 			.filter((ticket) => ticket.status === "open")
 			.map((ticket) => ticket._id);
-		console.time("Do guild stuff");
-		const channels = (
+		return (
 			await Promise.all(
 				ticketIds.flatMap(async (id) => {
 					const guild = await client.guilds.fetch(guildId);
@@ -128,8 +124,6 @@ export namespace Ticket {
 				}),
 			)
 		).filter((channel) => channel !== null);
-		console.timeEnd("Do guild stuff");
-		return channels;
 	}
 }
 
