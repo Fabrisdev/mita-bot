@@ -51,3 +51,15 @@ export const getTicketsFromGuild = query({
 		}));
 	},
 });
+
+export const getTicketsWithoutMessagesFromGuild = query({
+	args: {
+		guildId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query("tickets")
+			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+			.collect();
+	},
+});

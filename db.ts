@@ -64,14 +64,14 @@ export namespace Ticket {
 			guildId,
 			ownerId,
 		})) as TicketType;
-		Cache.update("tickets", (tickets) => [...tickets, ticket]);
+		Cache.update("ticketsWithoutMessages", (tickets) => [...tickets, ticket]);
 		return ticket;
 	}
 	export async function close(ticketId: Id<"tickets">) {
 		const ticket = (await convex.mutation(api.functions.tickets.closeTicket, {
 			ticketId,
 		})) as TicketType;
-		Cache.update("tickets", (tickets) =>
+		Cache.update("ticketsWithoutMessages", (tickets) =>
 			tickets.map((t) => (t._id === ticket._id ? ticket : t)),
 		);
 		return ticket;
@@ -94,20 +94,23 @@ export namespace Ticket {
 	}
 
 	export async function rawAll(guildId: string) {
-		const cachedTickets = Cache.read("tickets");
+		const cachedTickets = Cache.read("ticketsWithoutMessages");
 		if (cachedTickets) return cachedTickets;
 		const tickets = await convex.query(
-			api.functions.tickets.getTicketsFromGuild,
+			api.functions.tickets.getTicketsWithoutMessagesFromGuild,
 			{
 				guildId,
 			},
 		);
-		Cache.store("tickets", tickets);
+		Cache.store("ticketsWithoutMessages", tickets);
 		return tickets;
 	}
 
 	export async function all(guildId: string) {
-		const tickets = await rawAll(guildId);
+		const tickets = await convex.query(
+			api.functions.tickets.getTicketsFromGuild,
+			{ guildId },
+		);
 		const usersInfo = new Map<string, UserInfo>();
 		for (const ticket of tickets) {
 			for (const message of ticket.messages) {
