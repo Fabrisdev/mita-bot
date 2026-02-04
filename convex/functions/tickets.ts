@@ -7,11 +7,12 @@ export const openTicket = mutation({
 		ownerId: v.string(),
 	},
 	handler: async (ctx, args) => {
-		return await ctx.db.insert("tickets", {
+		const id = await ctx.db.insert("tickets", {
 			guildId: args.guildId,
 			ownerId: args.ownerId,
 			status: "open",
 		});
+		return ctx.db.get(id);
 	},
 });
 

@@ -1,5 +1,5 @@
 import { ConvexClient } from "convex/browser";
-import { Cache } from "./cache";
+import { Cache, type Ticket as TicketType } from "./cache";
 import { client } from "./client";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
@@ -60,10 +60,11 @@ export namespace Ticket {
 		guildId: string;
 		ownerId: string;
 	}) {
-		return await convex.mutation(api.functions.tickets.openTicket, {
+		const ticket = (await convex.mutation(api.functions.tickets.openTicket, {
 			guildId,
 			ownerId,
-		});
+		})) as TicketType;
+		Cache.update("tickets", (tickets) => [...tickets, ticket]);
 	}
 	export async function close(ticketId: Id<"tickets">) {
 		return await convex.mutation(api.functions.tickets.closeTicket, {
