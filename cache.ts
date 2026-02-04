@@ -1,11 +1,11 @@
 import type { api } from "./convex/_generated/api";
 
 type Cache = {
-	ticketsWithoutMessages: Ticket[];
+	tickets: Ticket[];
 };
 
 const cache: Cache = {
-	ticketsWithoutMessages: [],
+	tickets: [],
 };
 
 export namespace Cache {
@@ -25,4 +25,4 @@ export namespace Cache {
 }
 
 export type Ticket =
-	(typeof api.functions.tickets.getTicketsWithoutMessagesFromGuild._returnType)[number];
+	(typeof api.functions.tickets.getTicketsFromGuild._returnType)[number];
