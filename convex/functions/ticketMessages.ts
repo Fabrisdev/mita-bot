@@ -1,26 +1,22 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 
-export const storeMessages = mutation({
+export const storeMessage = mutation({
 	args: {
 		ticketId: v.id("tickets"),
-		messages: v.array(
-			v.object({
-				authorId: v.string(),
-				content: v.string(),
-				sentAt: v.number(),
-			}),
-		),
+		message: v.object({
+			authorId: v.string(),
+			content: v.string(),
+			sentAt: v.number(),
+		}),
 	},
 	handler: async (ctx, args) => {
-		for (const message of args.messages) {
-			await ctx.db.insert("ticketMessages", {
-				ticketId: args.ticketId,
-				authorId: message.authorId,
-				content: message.content,
-				sentAt: message.sentAt,
-			});
-		}
+		return await ctx.db.insert("ticketMessages", {
+			ticketId: args.ticketId,
+			authorId: args.message.authorId,
+			content: args.message.content,
+			sentAt: args.message.sentAt,
+		});
 	},
 });
 
