@@ -106,6 +106,22 @@ export namespace Ticket {
 		}
 		return tickets;
 	}
+
+	export async function ticketChannelsFrom(guildId: string) {
+		const tickets = await all(guildId);
+		const ticketIds = tickets
+			.filter((ticket) => ticket.status === "open")
+			.map((ticket) => ticket._id);
+		return (
+			await Promise.all(
+				ticketIds.flatMap(async (id) => {
+					const channel = await client.channels.fetch(id);
+					if (channel) return { channelId: channel.id, ticketId: id };
+					return null;
+				}),
+			)
+		).filter((channel) => channel !== null);
+	}
 }
 
 async function getUserInfo(userId: string) {
