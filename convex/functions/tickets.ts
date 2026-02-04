@@ -25,7 +25,6 @@ export const closeTicket = mutation({
 			status: "closed",
 			closedAt: Date.now(),
 		});
-		return ctx.db.get(args.ticketId);
 	},
 });
 
