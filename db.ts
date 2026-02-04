@@ -1,4 +1,5 @@
 import { ConvexClient } from "convex/browser";
+import { Cache } from "./cache";
 import { client } from "./client";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
@@ -87,9 +88,16 @@ export namespace Ticket {
 	}
 
 	export async function rawAll(guildId: string) {
-		return await convex.query(api.functions.tickets.getTicketsFromGuild, {
-			guildId,
-		});
+		const cachedTickets = Cache.read("tickets");
+		if (cachedTickets) return cachedTickets;
+		const tickets = await convex.query(
+			api.functions.tickets.getTicketsFromGuild,
+			{
+				guildId,
+			},
+		);
+		Cache.store("tickets", tickets);
+		return tickets;
 	}
 
 	export async function all(guildId: string) {
