@@ -65,7 +65,6 @@ export namespace Ticket {
 			ownerId,
 		})) as TicketType;
 		Cache.update("tickets", (tickets) => [...tickets, ticket]);
-		return ticket;
 	}
 	export async function close(ticketId: Id<"tickets">) {
 		return await convex.mutation(api.functions.tickets.closeTicket, {
