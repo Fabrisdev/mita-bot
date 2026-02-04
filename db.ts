@@ -107,7 +107,7 @@ export namespace Ticket {
 		return tickets;
 	}
 
-	export async function ticketChannelsFrom(guildId: string) {
+	export async function channelsFrom(guildId: string) {
 		const tickets = await all(guildId);
 		const ticketIds = tickets
 			.filter((ticket) => ticket.status === "open")
