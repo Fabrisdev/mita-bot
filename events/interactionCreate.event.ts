@@ -5,7 +5,6 @@ import {
 	type Interaction,
 	MessageFlags,
 	PermissionsBitField,
-	type TextBasedChannel,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
 import type { Id } from "../convex/_generated/dataModel";
@@ -25,20 +24,6 @@ async function handleButtonInteraction(
 	if (!interaction.customId.startsWith("close-ticket:")) return;
 	const id = interaction.customId.split(":")[1] as Id<"tickets">;
 	await Ticket.close(id);
-	const messagesCollection = await (
-		interaction.channel as TextBasedChannel
-	).messages.fetch();
-	const messages = [...messagesCollection.values()]
-		.filter((msg) => !msg.author.bot)
-		.map((msg) => ({
-			authorId: msg.author.id,
-			content: msg.content,
-			sentAt: msg.createdTimestamp,
-		}));
-	await Ticket.store({
-		ticketId: id,
-		messages,
-	});
 	await interaction.channel?.delete();
 }
 
