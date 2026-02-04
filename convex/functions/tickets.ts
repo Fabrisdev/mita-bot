@@ -1,6 +1,18 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 
+export const getTicketByChannelName = query({
+	args: {
+		channelName: v.string(),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query("tickets")
+			.filter((q) => q.eq(q.field("_id"), args.channelName))
+			.first();
+	},
+});
+
 export const openTicket = mutation({
 	args: {
 		guildId: v.string(),

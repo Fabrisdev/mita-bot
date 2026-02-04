@@ -52,6 +52,24 @@ type Incident = {
 };
 
 export namespace Ticket {
+	export async function findByChannelName({
+		guildId,
+		channelName,
+	}: {
+		guildId: string;
+		channelName: string;
+	}) {
+		const ticket = await convex.query(
+			api.functions.tickets.getTicketByChannelName,
+			{
+				channelName,
+			},
+		);
+		if (ticket === null) return null;
+		if (ticket.guildId !== guildId) return null;
+		return ticket;
+	}
+
 	export async function open({
 		guildId,
 		ownerId,
