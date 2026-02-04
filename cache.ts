@@ -1,21 +1,10 @@
-import type { api } from "./convex/_generated/api";
-
-type Cache = {
-	tickets: Ticket[];
-};
-
-const cache: Cache = {
-	tickets: [],
-};
+const cache: Record<string, unknown> = {};
 
 export namespace Cache {
-	export function store<K extends keyof Cache>(key: K, value: Cache[K]) {
+	export function store(key: string, value: unknown) {
 		cache[key] = value;
 	}
-	export function read<K extends keyof Cache>(key: K) {
+	export function read(key: string) {
 		return cache[key];
 	}
 }
-
-type Ticket =
-	(typeof api.functions.tickets.getTicketsFromGuild._returnType)[number];
