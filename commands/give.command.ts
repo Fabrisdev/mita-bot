@@ -33,6 +33,27 @@ export default {
 		const role = interaction.options.getRole("role", true);
 		const duration = interaction.options.getString("duration");
 
+		if (role.managed) {
+			await interaction.reply({
+				content: "Giving out bot roles is not allowed by Discord.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		const botMember = interaction.guild.members.me;
+		if (
+			botMember === null ||
+			role.position >= botMember?.roles.highest.position
+		) {
+			await interaction.reply({
+				content:
+					"I can't give that role! It is above me in the role hierarchy.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		const member = await interaction.guild.members.fetch(user.id);
 		if (duration === null) {
 			await member.roles.add(role.id);
