@@ -5,7 +5,7 @@ import { getAlertsChannel } from "../db";
 export async function showAlert(guildId: string, message: string) {
 	const alertsChannel = await getAlertsChannel(guildId);
 	if (!alertsChannel) return;
-	const channel = await client.channels.fetch(alertsChannel);
+	const channel = await client.channels.fetch(alertsChannel).catch(() => null);
 	if (channel == null) {
 		const guild = await client.guilds.fetch(guildId);
 		const owner = await guild.fetchOwner();
