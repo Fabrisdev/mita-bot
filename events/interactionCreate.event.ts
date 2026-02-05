@@ -9,6 +9,7 @@ import {
 import { fetchCommands } from "../commands/handler";
 import type { Id } from "../convex/_generated/dataModel";
 import { Ticket } from "../db";
+import { Log } from "../log";
 
 const commands = await fetchCommands();
 
@@ -32,11 +33,11 @@ async function handleChatInputCommand(
 ) {
 	const command = commands.get(interaction.commandName);
 	if (command === undefined) {
-		console.error(
+		await Log.error(
 			`Interaction ${interaction.commandName} was run, but there were no commands found matching it. More info below:`,
 		);
-		console.error("INTERACTION COMMAND NAME:", interaction.commandName);
-		console.error("COMMANDS AVAILABLE:", commands);
+		await Log.error("INTERACTION COMMAND NAME:", interaction.commandName);
+		await Log.error("COMMANDS AVAILABLE:", commands);
 		return;
 	}
 	for (const permission of command.permissions) {
@@ -66,10 +67,10 @@ async function handleChatInputCommand(
 	try {
 		await command.run(interaction);
 	} catch (error) {
-		console.error(
+		Log.error(
 			`An error ocurred whilst executing ${interaction.commandName} interaction. More info below:`,
 		);
-		console.error(error);
+		Log.error(error);
 		const errorMessage =
 			"There was an error while executing this command. We've been notified about it and are working on fixing it.";
 		if (interaction.replied || interaction.deferred) {
