@@ -33,6 +33,14 @@ export default {
 		const role = interaction.options.getRole("role", true);
 		const duration = interaction.options.getString("duration");
 
+		if (role.id === interaction.guild.id) {
+			await interaction.reply({
+				content: "Giving out the @everyone role is not allowed by Discord.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		if (role.managed) {
 			await interaction.reply({
 				content: "Giving out bot roles is not allowed by Discord.",
