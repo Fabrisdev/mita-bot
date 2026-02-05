@@ -58,6 +58,11 @@ export default {
 			return;
 		}
 
+		await user
+			.send(
+				`You've been banned from **${interaction.guild.name}** due to: ${reason}`,
+			)
+			.catch(() => null);
 		await interaction.guild.members.ban(user, { reason });
 
 		await interaction.reply(

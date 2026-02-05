@@ -55,7 +55,11 @@ export default {
 			});
 			return;
 		}
-
+		await user
+			.send(
+				`You've been kicked from **${interaction.guild.name}** due to: ${reason}`,
+			)
+			.catch(() => null);
 		await interaction.guild.members.kick(user, reason);
 		await interaction.reply(
 			`The user ${user.tag} has been kicked with the reason: ${reason}`,

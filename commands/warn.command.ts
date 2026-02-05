@@ -32,6 +32,11 @@ export default {
 		await interaction.reply(
 			`The user ${user.tag} has been warned with the reason: ${reason}`,
 		);
+		await user
+			.send(
+				`You've been warned from **${interaction.guild.name}** due to: ${reason}`,
+			)
+			.catch(() => null);
 		await showAlert(
 			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has warned ${user.tag} with the reason: ${reason}`,
