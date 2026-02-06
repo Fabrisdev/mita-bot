@@ -24,6 +24,14 @@ export default {
 	],
 	run: async (interaction) => {
 		const message = interaction.options.getString("message", true);
+		const MAX_LENGTH = 2000;
+		if (message.length > MAX_LENGTH) {
+			await interaction.reply({
+				content: "Message length must be less than 2000 characters.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
 		const channelId =
 			interaction.options.getChannel("channel")?.id ?? interaction.channelId;
 		const channel = await interaction.guild.channels.fetch(channelId);
