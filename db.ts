@@ -243,4 +243,13 @@ export namespace Birthday {
 			{ id, year: new Date().getFullYear() },
 		);
 	}
+
+	export async function setBirthday(data: {
+		day: number;
+		month: number;
+		guildId: string;
+		userId: string;
+	}) {
+		return await convex.mutation(api.functions.birthdays.setBirthday, data);
+	}
 }
