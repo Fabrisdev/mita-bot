@@ -42,3 +42,15 @@ export const markAsRemoved = mutation({
 		});
 	},
 });
+
+export const getRoleToRemove = query({
+	args: {
+		id: v.id("tempRoles"),
+	},
+	handler: async (ctx, args) => {
+		return await ctx.db
+			.query("tempRoles")
+			.withIndex("by_id", (q) => q.eq("_id", args.id))
+			.first();
+	},
+});
