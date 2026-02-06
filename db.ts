@@ -54,7 +54,7 @@ export async function addToUserHistory(
 }
 
 type Incident = {
-	type: "ban" | "unban" | "kick" | "mute" | "warn";
+	type: "ban" | "unban" | "kick" | "timeout" | "warn";
 	moderatorId: string;
 	reason: string;
 };

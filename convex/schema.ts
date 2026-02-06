@@ -17,7 +17,7 @@ export default defineSchema({
 					v.literal("ban"),
 					v.literal("unban"),
 					v.literal("kick"),
-					v.literal("mute"),
+					v.literal("timeout"),
 					v.literal("warn"),
 				),
 				at: v.number(),
