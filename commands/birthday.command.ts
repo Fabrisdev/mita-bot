@@ -23,7 +23,7 @@ export default {
 	run: async (interaction) => {
 		const month = interaction.options.getNumber("month", true);
 		const day = interaction.options.getNumber("day", true);
-		if (isValidDate(month, day)) {
+		if (!isValidDate(month, day)) {
 			interaction.reply({
 				content: "That date doesn't make sense!",
 				flags: MessageFlags.Ephemeral,
