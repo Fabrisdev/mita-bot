@@ -51,6 +51,7 @@ export default defineSchema({
 		day: v.number(),
 		lastCelebratedYear: v.optional(v.number()),
 	})
-		.index("by_date", ["month", "day"])
-		.index("by_guild", ["guildId"]),
+		.index("by_date", ["guildId", "month", "day"])
+		.index("by_guild", ["guildId"])
+		.index("by_user", ["guildId", "userId"]),
 });
