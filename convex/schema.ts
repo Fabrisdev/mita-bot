@@ -36,4 +36,11 @@ export default defineSchema({
 		content: v.string(),
 		sentAt: v.number(),
 	}).index("by_ticket", ["ticketId"]),
+	tempRoles: defineTable({
+		guildId: v.string(),
+		userId: v.string(),
+		roleId: v.string(),
+		expiresOn: v.number(),
+		alreadyRemoved: v.boolean(),
+	}).index("by_already_removed", ["alreadyRemoved"]),
 });
