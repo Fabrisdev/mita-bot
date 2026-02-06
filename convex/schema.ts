@@ -5,6 +5,7 @@ export default defineSchema({
 	guildSettings: defineTable({
 		guildId: v.string(),
 		alertsChannelId: v.string(),
+		birthdayRoleId: v.optional(v.string()),
 	}).index("by_guild", ["guildId"]),
 	history: defineTable({
 		guildId: v.string(),
@@ -43,4 +44,13 @@ export default defineSchema({
 		expiresOn: v.number(),
 		alreadyRemoved: v.boolean(),
 	}).index("by_already_removed", ["alreadyRemoved"]),
+	birthdays: defineTable({
+		guildId: v.string(),
+		userId: v.string(),
+		month: v.number(),
+		day: v.number(),
+		lastCelebratedYear: v.optional(v.number()),
+	})
+		.index("by_date", ["month", "day"])
+		.index("by_guild", ["guildId"]),
 });
