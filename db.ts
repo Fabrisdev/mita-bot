@@ -157,3 +157,24 @@ type UserInfo = {
 	icon: string | null;
 	name: string;
 };
+
+export namespace TempRoles {
+	export async function add(data: {
+		guildId: string;
+		userId: string;
+		roleId: string;
+		expiresOn: number;
+	}) {
+		return await convex.mutation(api.functions.tempRoles.insertTempRole, data);
+	}
+
+	export async function markAsRemoved(id: Id<"tempRoles">) {
+		return await convex.mutation(api.functions.tempRoles.markAsRemoved, { id });
+	}
+
+	export async function getRolesToRemove() {
+		return await convex.query(api.functions.tempRoles.getRolesToRemove, {
+			now: Date.now(),
+		});
+	}
+}
