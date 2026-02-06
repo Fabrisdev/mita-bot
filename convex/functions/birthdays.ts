@@ -51,3 +51,15 @@ export const getBirthdaysToday = query({
 			.collect();
 	},
 });
+
+export const updateLastCelebratedYear = mutation({
+	args: {
+		id: v.id("birthdays"),
+		year: v.number(),
+	},
+	handler: async (ctx, args) => {
+		await ctx.db.patch(args.id, {
+			lastCelebratedYear: args.year,
+		});
+	},
+});

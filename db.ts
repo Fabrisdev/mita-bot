@@ -6,6 +6,14 @@ import { convexUrl } from "./environment";
 
 const convex = new ConvexClient(convexUrl());
 
+export namespace Settings {
+	export async function getByGuild(guildId: string) {
+		return await convex.query(api.functions.guildSettings.getByGuild, {
+			guildId,
+		});
+	}
+}
+
 export async function setAlertsChannel(guildId: string, channelId: string) {
 	await convex.mutation(api.functions.guildSettings.setAlertsChannel, {
 		guildId,
@@ -209,6 +217,30 @@ export namespace Birthday {
 		return await convex.mutation(
 			api.functions.guildSettings.setBirthdayRole,
 			data,
+		);
+	}
+
+	export async function todaysBirthdays(guildId: string) {
+		const today = getToday();
+		return await convex.query(api.functions.birthdays.getBirthdaysToday, {
+			...today,
+			guildId,
+		});
+	}
+
+	function getToday() {
+		const now = new Date();
+		return {
+			year: now.getFullYear(),
+			month: now.getMonth() + 1,
+			day: now.getDate(),
+		};
+	}
+
+	export async function updateLastCelebratedYear(id: Id<"birthdays">) {
+		return await convex.mutation(
+			api.functions.birthdays.updateLastCelebratedYear,
+			{ id, year: new Date().getFullYear() },
 		);
 	}
 }
