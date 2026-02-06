@@ -193,3 +193,22 @@ export namespace TempRoles {
 		console.log(`Removed role ${role.roleId} from user ${role.userId}.`);
 	}
 }
+
+export namespace Birthday {
+	export async function setChannel(data: {
+		guildId: string;
+		channelId: string;
+	}) {
+		return await convex.mutation(
+			api.functions.guildSettings.setBirthdayChannel,
+			data,
+		);
+	}
+
+	export async function setRole(data: { guildId: string; roleId: string }) {
+		return await convex.mutation(
+			api.functions.guildSettings.setBirthdayRole,
+			data,
+		);
+	}
+}
