@@ -1,3 +1,4 @@
+import { ChannelType } from "discord.js";
 import { client } from "./client";
 import { Birthday, Settings } from "./db";
 
@@ -14,19 +15,31 @@ async function runBirthdayCheckByGuild(guildId: string) {
 	if (guild === null) return;
 	const settings = await Settings.getByGuild(guild.id);
 	if (settings === null) return;
-	if (settings.birthdayRoleId === undefined) return;
-	const role = await guild.roles
-		.fetch(settings.birthdayRoleId)
-		.catch(() => null);
-	if (role === null) return;
+	if (
+		settings.birthdayRoleId === undefined &&
+		settings.birthdayChannelId === undefined
+	)
+		return;
+	const role = settings.birthdayRoleId
+		? await guild.roles.fetch(settings.birthdayRoleId).catch(() => null)
+		: null;
 	const todaysBirthdays = await Birthday.todaysBirthdays(guildId);
 	for (const birthday of todaysBirthdays) {
 		if (birthday.lastCelebratedYear === new Date().getFullYear()) continue;
 		const member = await guild.members.fetch(birthday.userId).catch(() => null);
-		if (member === null) continue;
-		await member.roles.add(role).catch(() => null);
+		if (role) {
+			if (member === null) continue;
+			await member.roles.add(role).catch(() => null);
+		}
+		const channel = settings.birthdayChannelId
+			? await guild.channels.fetch(settings.birthdayChannelId)
+			: null;
+		if (channel && channel.type === ChannelType.GuildText && member) {
+			await channel.send(`Happy birthday to ${member}!`).catch(() => null);
+		}
 		await Birthday.updateLastCelebratedYear(birthday._id);
 	}
+	if (role === null) return;
 	for (const member of role.members.values()) {
 		const birthday = todaysBirthdays.find(
 			(birthday) => birthday.userId === member.user.id,
