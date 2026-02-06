@@ -37,3 +37,53 @@ export const getByGuild = query({
 			.first();
 	},
 });
+
+export const setBirthdayChannel = mutation({
+	args: {
+		guildId: v.string(),
+		channelId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const settings = await ctx.db
+			.query("guildSettings")
+			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+			.first();
+
+		if (settings) {
+			await ctx.db.patch(settings._id, {
+				birthdayChannelId: args.channelId,
+			});
+			return settings._id;
+		}
+
+		return await ctx.db.insert("guildSettings", {
+			guildId: args.guildId,
+			birthdayChannelId: args.channelId,
+		});
+	},
+});
+
+export const setBirthdayRole = mutation({
+	args: {
+		guildId: v.string(),
+		roleId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const settings = await ctx.db
+			.query("guildSettings")
+			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+			.first();
+
+		if (settings) {
+			await ctx.db.patch(settings._id, {
+				birthdayRoleId: args.roleId,
+			});
+			return settings._id;
+		}
+
+		return await ctx.db.insert("guildSettings", {
+			guildId: args.guildId,
+			birthdayRoleId: args.roleId,
+		});
+	},
+});

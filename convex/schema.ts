@@ -4,7 +4,8 @@ import { v } from "convex/values";
 export default defineSchema({
 	guildSettings: defineTable({
 		guildId: v.string(),
-		alertsChannelId: v.string(),
+		alertsChannelId: v.optional(v.string()),
+		birthdayChannelId: v.optional(v.string()),
 		birthdayRoleId: v.optional(v.string()),
 	}).index("by_guild", ["guildId"]),
 	history: defineTable({
