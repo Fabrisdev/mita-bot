@@ -10,7 +10,7 @@ import type { Command } from "./types";
 export default {
 	description: "Timeout a user",
 	environment: "guild",
-	permissions: [PermissionFlagsBits.MuteMembers],
+	permissions: [PermissionFlagsBits.ModerateMembers],
 	options: [
 		{
 			name: "user",
@@ -44,8 +44,39 @@ export default {
 			});
 			return;
 		}
+
+		if (user.id === interaction.client.user.id) {
+			await interaction.reply({
+				content: "Why?! :(",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		const member = await interaction.guild.members.fetch(user);
+		const botMember = interaction.guild.members.me;
+		if (
+			botMember === null ||
+			member.roles.highest.position >= botMember.roles.highest.position
+		) {
+			await interaction.reply({
+				content:
+					"I can't time out this user since they are above me in the role hierarchy.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+		if (!member.moderatable) {
+			await interaction.reply({
+				content: "I can't time out this user.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
 		await member.timeout(duration, reason);
+		await interaction.reply(
+			`The user ${user.tag} has been timed out with the reason: ${reason}`,
+		);
 		await showAlert(
 			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has timed out ${user.tag} for ${durationText} with the reason: ${reason}`,
