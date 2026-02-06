@@ -74,6 +74,11 @@ export default {
 			return;
 		}
 		await member.timeout(duration, reason);
+		await user
+			.send(
+				`You've been timed out from **${interaction.guild.name}** for ${durationText} due to: ${reason}`,
+			)
+			.catch(() => null);
 		await interaction.reply(
 			`The user ${user.tag} has been timed out with the reason: ${reason}`,
 		);
