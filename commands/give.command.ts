@@ -76,9 +76,11 @@ export default {
 
 		const time = parseDuration(duration);
 		if (time === null) {
-			await interaction.reply(
-				"Sorry, I didn't understand that duration. Some correct usage examples are: '10d', '30m', '5h'",
-			);
+			await interaction.reply({
+				content:
+					"Sorry, I didn't understand that duration. Some correct usage examples are: '10d', '30m', '5h'",
+				flags: MessageFlags.Ephemeral,
+			});
 			return;
 		}
 
