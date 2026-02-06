@@ -3,6 +3,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
+import { TempRoles } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -52,7 +53,7 @@ export default {
 		const botMember = interaction.guild.members.me;
 		if (
 			botMember === null ||
-			role.position >= botMember?.roles.highest.position
+			role.position >= botMember.roles.highest.position
 		) {
 			await interaction.reply({
 				content:
@@ -63,6 +64,7 @@ export default {
 		}
 
 		const member = await interaction.guild.members.fetch(user.id);
+
 		if (duration === null) {
 			await member.roles.add(role.id);
 			await interaction.reply({
@@ -71,5 +73,47 @@ export default {
 			});
 			return;
 		}
+
+		const time = parseDuration(duration);
+		if (time === null) {
+			await interaction.reply(
+				"Sorry, I didn't understand that duration. Some correct usage examples are: '10d', '30m', '5h'",
+			);
+			return;
+		}
+
+		await member.roles.add(role.id);
+
+		const expiresOn = Date.now() + time;
+		const id = await TempRoles.add({
+			guildId: interaction.guild.id,
+			roleId: role.id,
+			userId: user.id,
+			expiresOn,
+		});
+		setTimeout(() => {
+			TempRoles.remove(id);
+		}, time);
+		await interaction.reply({
+			content: "Role given!",
+			flags: MessageFlags.Ephemeral,
+		});
 	},
 } satisfies Command<"guild">;
+
+function parseDuration(duration: string) {
+	const match = duration.trim().match(/^(\d+)\s*(s|m|h|d)$/i);
+	if (!match) return null;
+	if (match[1] === undefined || match[2] === undefined) return null;
+	const value = Number(match[1]);
+	const unit = match[2].toLowerCase();
+
+	const multipliers: Record<string, number> = {
+		s: 1_000,
+		m: 60_000,
+		h: 3_600_000,
+		d: 86_400_000,
+	};
+
+	return value * (multipliers[unit] as number);
+}
