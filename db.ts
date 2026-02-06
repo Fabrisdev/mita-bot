@@ -179,6 +179,7 @@ export namespace TempRoles {
 	}
 
 	export async function remove(id: Id<"tempRoles">) {
+		console.log(`Marked role ${id} as removed.`);
 		await markAsRemoved(id);
 		const role = await convex.query(api.functions.tempRoles.getRoleToRemove, {
 			id,
@@ -189,5 +190,6 @@ export namespace TempRoles {
 		const member = await guild.members.fetch(role.userId).catch(() => null);
 		if (member === null) return;
 		await member.roles.remove(role.roleId).catch(() => null);
+		console.log(`Removed role ${role.roleId} from user ${role.userId}.`);
 	}
 }
