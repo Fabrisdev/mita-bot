@@ -3,14 +3,9 @@ import { Birthday, Settings } from "./db";
 
 export async function setupBirthdayIntervals() {
 	const EVERY_HOUR = 60 * 60 * 1000;
+	await runBirthdayCheckForAllGuilds();
 	setInterval(async () => {
-		console.log("Setting up birthday intervals...");
-		for (const guild of client.guilds.cache.values()) {
-			const settings = await Settings.getByGuild(guild.id);
-			if (settings === null) continue;
-			await runBirthdayCheckByGuild(settings.guildId);
-		}
-		console.log("Finished setting up birthday intervals");
+		await runBirthdayCheckForAllGuilds();
 	}, EVERY_HOUR);
 }
 
@@ -39,4 +34,14 @@ async function runBirthdayCheckByGuild(guildId: string) {
 		if (birthday === undefined)
 			await member.roles.remove(role.id).catch(() => null);
 	}
+}
+
+async function runBirthdayCheckForAllGuilds() {
+	console.log("Running birthday checks...");
+	for (const guild of client.guilds.cache.values()) {
+		const settings = await Settings.getByGuild(guild.id);
+		if (settings === null) continue;
+		await runBirthdayCheckByGuild(settings.guildId);
+	}
+	console.log("Finished running birthday checks.");
 }
