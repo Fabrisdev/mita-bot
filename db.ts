@@ -168,7 +168,7 @@ export namespace TempRoles {
 		return await convex.mutation(api.functions.tempRoles.insertTempRole, data);
 	}
 
-	export async function markAsRemoved(id: Id<"tempRoles">) {
+	async function markAsRemoved(id: Id<"tempRoles">) {
 		return await convex.mutation(api.functions.tempRoles.markAsRemoved, { id });
 	}
 
@@ -176,5 +176,18 @@ export namespace TempRoles {
 		return await convex.query(api.functions.tempRoles.getRolesToRemove, {
 			now: Date.now(),
 		});
+	}
+
+	export async function remove(id: Id<"tempRoles">) {
+		await markAsRemoved(id);
+		const role = await convex.query(api.functions.tempRoles.getRoleToRemove, {
+			id,
+		});
+		if (role === null) return;
+		const guild = await client.guilds.fetch(role.guildId).catch(() => null);
+		if (guild === null) return;
+		const member = await guild.members.fetch(role.userId).catch(() => null);
+		if (member === null) return;
+		await member.roles.remove(role.roleId).catch(() => null);
 	}
 }
