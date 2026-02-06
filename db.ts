@@ -223,7 +223,8 @@ export namespace Birthday {
 	export async function todaysBirthdays(guildId: string) {
 		const today = getToday();
 		return await convex.query(api.functions.birthdays.getBirthdaysToday, {
-			...today,
+			day: today.day,
+			month: today.month,
 			guildId,
 		});
 	}
