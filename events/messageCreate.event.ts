@@ -1,5 +1,6 @@
 import { ChannelType, type Message } from "discord.js";
 import { Counting } from "../commands/counting";
+import { generateTomatoImage } from "../commands/tomato.command";
 import { Ticket } from "../db";
 
 export default async (message: Message) => {
@@ -40,11 +41,13 @@ async function countingSystem(message: Message) {
 	const nextNumber = data.currentNumber + 1;
 	if (content !== nextNumber.toString()) {
 		if (Number.isNaN(Number(content))) return;
-		await message.react("❌");
+		await message.react("🍅");
 		data.currentNumber = 0;
-		await message.reply(
-			`${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
-		);
+		const image = await generateTomatoImage(message.author);
+		await message.reply({
+			content: `${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
+			files: [image],
+		});
 		return;
 	}
 	data.currentNumber += 1;
