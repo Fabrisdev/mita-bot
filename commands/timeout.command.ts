@@ -55,7 +55,18 @@ export default {
 			return;
 		}
 
-		const member = await interaction.guild.members.fetch(user);
+		const member = await interaction.guild.members
+			.fetch(user)
+			.catch(() => null);
+
+		if (!member) {
+			await interaction.reply({
+				content: "That user does not seem to be on the server.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		const moderator = interaction.member as GuildMember;
 		if (member.roles.highest.position >= moderator.roles.highest.position) {
 			await interaction.reply({

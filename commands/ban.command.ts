@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandOptionType,
+	type GuildMember,
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
@@ -45,6 +46,16 @@ export default {
 		if (!member) {
 			await interaction.reply({
 				content: "That user does not seem to be on the server.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		const moderator = interaction.member as GuildMember;
+		if (member.roles.highest.position >= moderator.roles.highest.position) {
+			await interaction.reply({
+				content:
+					"You can't time out a user who is above or in the same role hierarchy as you.",
 				flags: MessageFlags.Ephemeral,
 			});
 			return;

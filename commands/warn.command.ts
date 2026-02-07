@@ -1,4 +1,9 @@
-import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
+import {
+	ApplicationCommandOptionType,
+	type GuildMember,
+	MessageFlags,
+	PermissionFlagsBits,
+} from "discord.js";
 import { addToUserHistory } from "../db";
 import { showAlert } from "./alert";
 import type { Command } from "./types";
@@ -24,6 +29,29 @@ export default {
 		const user = interaction.options.getUser("user", true);
 		const reason =
 			interaction.options.getString("reason") ?? "No reason specified";
+
+		const member = await interaction.guild.members
+			.fetch(user.id)
+			.catch(() => null);
+
+		if (!member) {
+			await interaction.reply({
+				content: "That user does not seem to be on the server.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		const moderator = interaction.member as GuildMember;
+		if (member.roles.highest.position >= moderator.roles.highest.position) {
+			await interaction.reply({
+				content:
+					"You can't time out a user who is above or in the same role hierarchy as you.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		await addToUserHistory(interaction.guild.id, user.id, {
 			moderatorId: interaction.user.id,
 			reason,
