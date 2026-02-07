@@ -21,6 +21,20 @@ export default {
 	],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
+		if (user.id === interaction.user.id) {
+			interaction.reply({
+				content: "No, you can't marry yourself...",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+		if (user.id === interaction.client.user.id) {
+			interaction.reply({
+				content: "H-HUH?!",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
 		const member = await interaction.guild.members
 			.fetch(user)
 			.catch(() => null);
