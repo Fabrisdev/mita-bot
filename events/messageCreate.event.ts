@@ -38,7 +38,15 @@ async function countingSystem(message: Message) {
 
 	const { content } = message;
 	const nextNumber = data.currentNumber + 1;
-	if (content !== nextNumber.toString()) return;
+	if (content !== nextNumber.toString()) {
+		if (Number.isNaN(Number(content))) return;
+		await message.react("❌");
+		data.currentNumber = 0;
+		await message.reply(
+			`${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
+		);
+		return;
+	}
 	data.currentNumber += 1;
 	await message.react("✅");
 }
