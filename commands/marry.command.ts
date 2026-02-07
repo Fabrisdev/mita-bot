@@ -31,8 +31,21 @@ export default {
 			});
 			return;
 		}
+		const acceptButton = new ButtonBuilder()
+			.setCustomId(`accept-marry:${interaction.user.id}:${user.id}`)
+			.setLabel("Accept")
+			.setStyle(ButtonStyle.Success);
+		const rejectButton = new ButtonBuilder()
+			.setCustomId(`reject-marry:${interaction.user.id}:${user.id}`)
+			.setLabel("Reject")
+			.setStyle(ButtonStyle.Danger);
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+			acceptButton,
+			rejectButton,
+		);
 		await interaction.reply({
 			content: `**${user} has asked marriage to ${member}**! Will they accept?`,
+			components: [row],
 		});
 	},
 } satisfies Command<"guild">;
