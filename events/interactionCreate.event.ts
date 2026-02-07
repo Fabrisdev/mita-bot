@@ -29,42 +29,45 @@ async function handleButtonInteraction(
 		await closeTicketButtonInteraction(interaction);
 		return;
 	}
-	if (interaction.customId.startsWith("accept-marry:")) {
-		await acceptMarryButtonInteraction(interaction);
-		return;
-	}
-	if (interaction.customId.startsWith("reject-marry:")) {
-		await rejectMarryButtonInteraction(interaction);
+	if (
+		interaction.customId.startsWith("accept-marry:") ||
+		interaction.customId.startsWith("reject-marry:")
+	) {
+		const proposer = interaction.customId.split(":")[1] as string;
+		const expectedReplier = interaction.customId.split(":")[2] as string;
+		if (expectedReplier !== interaction.user.id) {
+			await interaction.reply({
+				content: `Only <@${expectedReplier}> can reply to this!`,
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		const rows = interaction.message.components.map((row) => {
+			if (row.type !== ComponentType.ActionRow) return row;
+
+			const buttons = row.components
+				.filter((c) => c.type === ComponentType.Button)
+				.map((button) => ButtonBuilder.from(button).setDisabled(true));
+
+			return new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
+		});
+		await interaction.update({
+			components: rows,
+		});
+		if (interaction.customId.startsWith("accept-marry:")) {
+			await acceptMarryButtonInteraction(interaction, proposer);
+			return;
+		}
+		await rejectMarryButtonInteraction(interaction, proposer);
 		return;
 	}
 }
 
 async function acceptMarryButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
+	proposer: string,
 ) {
-	const proposer = interaction.customId.split(":")[1] as string;
-	const expectedReplier = interaction.customId.split(":")[2] as string;
-	if (expectedReplier !== interaction.user.id) {
-		await interaction.reply({
-			content: `Only <@${expectedReplier}> can reply to this!`,
-			flags: MessageFlags.Ephemeral,
-		});
-		return;
-	}
-
-	const rows = interaction.message.components.map((row) => {
-		if (row.type !== ComponentType.ActionRow) return row;
-
-		const buttons = row.components
-			.filter((c) => c.type === ComponentType.Button)
-			.map((button) => ButtonBuilder.from(button).setDisabled(true));
-
-		return new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
-	});
-
-	await interaction.update({
-		components: rows,
-	});
 	await interaction.followUp(
 		`${interaction.user} **ACCEPTED!!** 💍💐 <@${proposer}> and ${interaction.user} are now **MARRIED**!`,
 	);
@@ -72,7 +75,12 @@ async function acceptMarryButtonInteraction(
 
 async function rejectMarryButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
-) {}
+	proposer: string,
+) {
+	await interaction.followUp(
+		`${interaction.user} **REJECTED** <@${proposer}>!! Ouch.. that must have hurt.`,
+	);
+}
 
 async function closeTicketButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
