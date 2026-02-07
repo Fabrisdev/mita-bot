@@ -88,6 +88,7 @@ export default {
 				content: "Temp bans are not implemented yet.",
 				flags: MessageFlags.Ephemeral,
 			});
+			return;
 		}
 
 		await interaction.reply(
