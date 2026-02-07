@@ -3,6 +3,7 @@ import { CountingDB } from "../db";
 type CountingData = {
 	channelId: string;
 	currentNumber: number;
+	lastSenderId: string;
 } | null;
 
 const CountingCache = new Map<string, CountingData>();
@@ -19,6 +20,7 @@ export namespace Counting {
 		const defaultData = {
 			channelId,
 			currentNumber: 0,
+			lastSenderId: "",
 		};
 		CountingCache.set(guildId, defaultData);
 		return defaultData;

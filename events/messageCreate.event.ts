@@ -57,6 +57,11 @@ export namespace CountingSystem {
 			});
 			return;
 		}
+		if (data.lastSenderId === message.author.id) {
+			if (message.deletable) message.delete();
+			return;
+		}
+		data.lastSenderId = message.author.id;
 		data.currentNumber += 1;
 		await message.react(positiveReactions.next().value);
 	}
