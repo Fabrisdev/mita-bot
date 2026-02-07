@@ -1,4 +1,5 @@
 import { ChannelType, type Message } from "discord.js";
+import { evaluate } from "mathjs";
 import { Counting } from "../commands/counting";
 import { generateTomatoImage } from "../commands/tomato.command";
 import { Ticket } from "../db";
@@ -43,18 +44,33 @@ export namespace CountingSystem {
 
 		const { content } = message;
 		const nextNumber = data.currentNumber + 1;
-		if (content !== nextNumber.toString()) {
-			if (Number.isNaN(Number(content))) return;
+		const result = tryEvaluate(content);
+		if (result === null) return;
+		if (result !== nextNumber) {
 			await message.react("🍅");
 			data.currentNumber = 0;
 			const image = await generateTomatoImage(message.author);
 			await message.reply({
-				content: `${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
+				content: `${message.author} **RUINED IT AT ${nextNumber}**!! (they sent ${result}) 🍅 🍅 🍅 Let's start again from 1...`,
 				files: [image],
 			});
 			return;
 		}
 		data.currentNumber += 1;
 		await message.react(positiveReactions.next().value);
+	}
+}
+
+function tryEvaluate(input: string) {
+	try {
+		const result = evaluate(input);
+
+		if (typeof result === "number" && Number.isFinite(result)) {
+			return result;
+		}
+
+		return null;
+	} catch {
+		return null;
 	}
 }
