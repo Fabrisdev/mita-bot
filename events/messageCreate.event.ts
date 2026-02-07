@@ -29,13 +29,16 @@ async function ticketSystem(message: Message) {
 }
 
 async function countingSystem(message: Message) {
-	console.time("counting system");
 	if (!message.guild) return;
 	if (message.channel.type !== ChannelType.GuildText) return;
 	const guildId = message.guild.id;
 	const data = await Counting.get(guildId);
 	if (data === null) return;
 	if (message.channel.id !== data.channelId) return;
-	console.timeEnd("counting system");
-	console.log("inside counting");
+
+	const { content } = message;
+	const nextNumber = data.currentNumber + 1;
+	if (content !== nextNumber.toString()) return;
+	data.currentNumber += 1;
+	await message.react("✅");
 }
