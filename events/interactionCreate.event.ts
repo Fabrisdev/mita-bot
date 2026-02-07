@@ -71,6 +71,21 @@ async function acceptMarryButtonInteraction(
 	await interaction.followUp(
 		`${interaction.user} **ACCEPTED!!** 💍💐 <@${proposer}> and ${interaction.user} are now **MARRIED**!`,
 	);
+	const proposerMember = await interaction.guild?.members
+		.fetch(proposer)
+		.catch(() => null);
+	if (proposerMember) {
+		const currentNickname =
+			proposerMember.nickname ?? proposerMember.user.username;
+		proposerMember.setNickname(`${currentNickname} 💍`).catch(() => null);
+	}
+	const member = await interaction.guild?.members
+		.fetch(interaction.user)
+		.catch(() => null);
+	if (member) {
+		const currentNickname = member.nickname ?? member.user.username;
+		member.setNickname(`${currentNickname} 💍`).catch(() => null);
+	}
 }
 
 async function rejectMarryButtonInteraction(
