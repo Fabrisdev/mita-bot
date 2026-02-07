@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandOptionType,
+	type GuildMember,
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
@@ -55,6 +56,16 @@ export default {
 		}
 
 		const member = await interaction.guild.members.fetch(user);
+		const moderator = interaction.member as GuildMember;
+		if (member.roles.highest.position >= moderator.roles.highest.position) {
+			await interaction.reply({
+				content:
+					"You can't time out a user who is above or in the same role hierarchy as you.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		const botMember = interaction.guild.members.me;
 		if (
 			botMember === null ||
