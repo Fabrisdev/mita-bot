@@ -22,7 +22,44 @@ export default async (interaction: Interaction<CacheType>) => {
 async function handleButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
 ) {
-	if (!interaction.customId.startsWith("close-ticket:")) return;
+	if (interaction.customId.startsWith("close-ticket:")) {
+		await closeTicketButtonInteraction(interaction);
+		return;
+	}
+	if (interaction.customId.startsWith("accept-marry:")) {
+		await acceptMarryButtonInteraction(interaction);
+		return;
+	}
+	if (interaction.customId.startsWith("reject-marry:")) {
+		await rejectMarryButtonInteraction(interaction);
+		return;
+	}
+}
+
+async function acceptMarryButtonInteraction(
+	interaction: ButtonInteraction<CacheType>,
+) {
+	const proposer = interaction.customId.split(":")[1] as string;
+	const expectedReplier = interaction.customId.split(":")[2] as string;
+	if (expectedReplier !== interaction.user.id) {
+		await interaction.reply({
+			content: `Only <@${expectedReplier}> can reply to this!`,
+			flags: MessageFlags.Ephemeral,
+		});
+		return;
+	}
+	await interaction.reply(
+		`${interaction.user} **ACCEPTED!!** 💍💐 <@${proposer}> and ${interaction.user} are now **MARRIED**!`,
+	);
+}
+
+async function rejectMarryButtonInteraction(
+	interaction: ButtonInteraction<CacheType>,
+) {}
+
+async function closeTicketButtonInteraction(
+	interaction: ButtonInteraction<CacheType>,
+) {
 	const id = interaction.customId.split(":")[1] as Id<"tickets">;
 	await Ticket.close(id);
 	await interaction.channel?.delete();
