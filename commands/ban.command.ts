@@ -5,6 +5,7 @@ import {
 	PermissionFlagsBits,
 } from "discord.js";
 import { addToUserHistory } from "../db";
+import { parseDuration } from "../utils";
 import { showAlert } from "./alert";
 import type { Command } from "./types";
 
@@ -22,7 +23,11 @@ export default {
 			name: "reason",
 			description: "Ban reason",
 			type: ApplicationCommandOptionType.String,
-			required: false,
+		},
+		{
+			name: "duration",
+			description: "Ban duration",
+			type: ApplicationCommandOptionType.String,
 		},
 	],
 	permissions: [PermissionFlagsBits.BanMembers],
@@ -30,6 +35,7 @@ export default {
 		const user = interaction.options.getUser("user", true);
 		const reason =
 			interaction.options.getString("reason") ?? "No reason specified";
+		const rawDuration = interaction.options.getString("duration");
 
 		if (user.id === interaction.client.user.id) {
 			await interaction.reply({
@@ -75,6 +81,14 @@ export default {
 			)
 			.catch(() => null);
 		await interaction.guild.members.ban(user, { reason });
+
+		if (rawDuration) {
+			const duration = parseDuration(rawDuration);
+			await interaction.reply({
+				content: "Temp bans are not implemented yet.",
+				flags: MessageFlags.Ephemeral,
+			});
+		}
 
 		await interaction.reply(
 			`The user ${user.tag} has been banned with the reason: ${reason}`,
