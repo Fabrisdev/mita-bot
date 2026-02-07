@@ -37,6 +37,7 @@ export default {
 		const dy = 370;
 
 		ctx.save();
+		ctx.globalAlpha = 0.75;
 		ctx.beginPath();
 		ctx.arc(
 			dx + avatarSize / 2,
