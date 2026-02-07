@@ -7,6 +7,7 @@ export default defineSchema({
 		alertsChannelId: v.optional(v.string()),
 		birthdayChannelId: v.optional(v.string()),
 		birthdayRoleId: v.optional(v.string()),
+		countingChannelId: v.optional(v.string()),
 	}).index("by_guild", ["guildId"]),
 	history: defineTable({
 		guildId: v.string(),

@@ -254,3 +254,15 @@ export namespace Birthday {
 		return await convex.mutation(api.functions.birthdays.setBirthday, data);
 	}
 }
+
+export namespace Counting {
+	export async function setChannel(data: {
+		guildId: string;
+		channelId: string;
+	}) {
+		return await convex.mutation(
+			api.functions.guildSettings.setCountingChannel,
+			data,
+		);
+	}
+}

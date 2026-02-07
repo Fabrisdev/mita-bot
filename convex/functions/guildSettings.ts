@@ -87,3 +87,28 @@ export const setBirthdayRole = mutation({
 		});
 	},
 });
+
+export const setCountingChannel = mutation({
+	args: {
+		guildId: v.string(),
+		channelId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const settings = await ctx.db
+			.query("guildSettings")
+			.withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+			.first();
+
+		if (settings) {
+			await ctx.db.patch(settings._id, {
+				countingChannelId: args.channelId,
+			});
+			return settings._id;
+		}
+
+		return await ctx.db.insert("guildSettings", {
+			guildId: args.guildId,
+			countingChannelId: args.channelId,
+		});
+	},
+});

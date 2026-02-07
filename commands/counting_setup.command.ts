@@ -1,5 +1,5 @@
 import { MessageFlags, PermissionFlagsBits } from "discord.js";
-import { Counting } from "./counting";
+import { Counting } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -7,7 +7,10 @@ export default {
 	environment: "guild",
 	permissions: [PermissionFlagsBits.Administrator],
 	run: async (interaction) => {
-		await Counting.setChannel(interaction.channelId);
+		await Counting.setChannel({
+			channelId: interaction.channelId,
+			guildId: interaction.guild.id,
+		});
 		await interaction.reply({
 			content: "Current channel set as counting channel!",
 			flags: MessageFlags.Ephemeral,
