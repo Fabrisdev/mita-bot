@@ -30,13 +30,13 @@ export default {
 			name: "reason",
 			description: "Reason for timeout",
 			type: ApplicationCommandOptionType.String,
-			required: true,
 		},
 	],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
 		const durationText = interaction.options.getString("duration", true);
-		const reason = interaction.options.getString("reason", true);
+		const reason =
+			interaction.options.getString("reason") ?? "No reason specified.";
 		const duration = parseDuration(durationText);
 		if (duration === null) {
 			interaction.reply({
