@@ -6,7 +6,7 @@ type CountingData = {
 	lastSenderId: string;
 } | null;
 
-const CountingCache = new Map<string, CountingData>();
+export const CountingCache = new Map<string, CountingData>();
 
 export namespace Counting {
 	export async function get(guildId: string) {

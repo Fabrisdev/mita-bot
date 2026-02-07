@@ -1,5 +1,6 @@
 import { ConvexClient } from "convex/browser";
 import { client } from "./client";
+import { CountingCache } from "./commands/counting";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
 import { convexUrl } from "./environment";
@@ -260,6 +261,11 @@ export namespace CountingDB {
 		guildId: string;
 		channelId: string;
 	}) {
+		CountingCache.set(data.guildId, {
+			channelId: data.channelId,
+			currentNumber: 0,
+			lastSenderId: "",
+		});
 		return await convex.mutation(
 			api.functions.guildSettings.setCountingChannel,
 			data,
