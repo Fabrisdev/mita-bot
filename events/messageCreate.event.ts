@@ -2,10 +2,11 @@ import { ChannelType, type Message } from "discord.js";
 import { Counting } from "../commands/counting";
 import { generateTomatoImage } from "../commands/tomato.command";
 import { Ticket } from "../db";
+import { cycle } from "../utils";
 
 export default async (message: Message) => {
 	ticketSystem(message);
-	countingSystem(message);
+	CountingSystem.run(message);
 };
 
 async function ticketSystem(message: Message) {
@@ -29,27 +30,31 @@ async function ticketSystem(message: Message) {
 	});
 }
 
-async function countingSystem(message: Message) {
-	if (!message.guild) return;
-	if (message.channel.type !== ChannelType.GuildText) return;
-	const guildId = message.guild.id;
-	const data = await Counting.get(guildId);
-	if (data === null) return;
-	if (message.channel.id !== data.channelId) return;
+export namespace CountingSystem {
+	const positiveReactions = cycle(["✅", "⭐", "🔥", "🗣️"] as const);
+	export async function run(message: Message) {
+		if (!message.guild) return;
+		if (message.channel.type !== ChannelType.GuildText) return;
+		if (message.author.bot) return;
+		const guildId = message.guild.id;
+		const data = await Counting.get(guildId);
+		if (data === null) return;
+		if (message.channel.id !== data.channelId) return;
 
-	const { content } = message;
-	const nextNumber = data.currentNumber + 1;
-	if (content !== nextNumber.toString()) {
-		if (Number.isNaN(Number(content))) return;
-		await message.react("🍅");
-		data.currentNumber = 0;
-		const image = await generateTomatoImage(message.author);
-		await message.reply({
-			content: `${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
-			files: [image],
-		});
-		return;
+		const { content } = message;
+		const nextNumber = data.currentNumber + 1;
+		if (content !== nextNumber.toString()) {
+			if (Number.isNaN(Number(content))) return;
+			await message.react("🍅");
+			data.currentNumber = 0;
+			const image = await generateTomatoImage(message.author);
+			await message.reply({
+				content: `${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...`,
+				files: [image],
+			});
+			return;
+		}
+		data.currentNumber += 1;
+		await message.react(positiveReactions.next().value);
 	}
-	data.currentNumber += 1;
-	await message.react("✅");
 }

@@ -14,3 +14,13 @@ export function parseDuration(duration: string) {
 
 	return value * (multipliers[unit] as number);
 }
+
+type NonEmptyArray<T> = readonly [T, ...T[]];
+
+export function* cycle<T>(array: NonEmptyArray<T>): Generator<T> {
+	let i = 0;
+	while (true) {
+		yield array[i] as T;
+		i = (i + 1) % array.length;
+	}
+}
