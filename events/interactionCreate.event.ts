@@ -1,7 +1,10 @@
 import {
+	ActionRowBuilder,
+	ButtonBuilder,
 	type ButtonInteraction,
 	type CacheType,
 	type ChatInputCommandInteraction,
+	ComponentType,
 	type Interaction,
 	MessageFlags,
 	PermissionsBitField,
@@ -48,7 +51,21 @@ async function acceptMarryButtonInteraction(
 		});
 		return;
 	}
-	await interaction.reply(
+
+	const rows = interaction.message.components.map((row) => {
+		if (row.type !== ComponentType.ActionRow) return row;
+
+		const buttons = row.components
+			.filter((c) => c.type === ComponentType.Button)
+			.map((button) => ButtonBuilder.from(button).setDisabled(true));
+
+		return new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
+	});
+
+	await interaction.update({
+		components: rows,
+	});
+	await interaction.followUp(
 		`${interaction.user} **ACCEPTED!!** 💍💐 <@${proposer}> and ${interaction.user} are now **MARRIED**!`,
 	);
 }
