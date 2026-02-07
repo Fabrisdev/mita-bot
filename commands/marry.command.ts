@@ -58,7 +58,7 @@ export default {
 			rejectButton,
 		);
 		await interaction.reply({
-			content: `**${user} has asked marriage to ${member}**! Will they accept?`,
+			content: `**${interaction.user} has asked marriage to ${user}**! Will they accept?`,
 			components: [row],
 		});
 	},
