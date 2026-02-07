@@ -255,7 +255,7 @@ export namespace Birthday {
 	}
 }
 
-export namespace Counting {
+export namespace CountingDB {
 	export async function setChannel(data: {
 		guildId: string;
 		channelId: string;
@@ -264,5 +264,12 @@ export namespace Counting {
 			api.functions.guildSettings.setCountingChannel,
 			data,
 		);
+	}
+	export async function getChannel(guildId: string) {
+		return await convex
+			.query(api.functions.guildSettings.getByGuild, {
+				guildId,
+			})
+			.then((row) => row?.countingChannelId);
 	}
 }

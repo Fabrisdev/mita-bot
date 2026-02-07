@@ -1,5 +1,5 @@
 import { MessageFlags, PermissionFlagsBits } from "discord.js";
-import { Counting } from "../db";
+import { CountingDB } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -7,7 +7,7 @@ export default {
 	environment: "guild",
 	permissions: [PermissionFlagsBits.Administrator],
 	run: async (interaction) => {
-		await Counting.setChannel({
+		await CountingDB.setChannel({
 			channelId: interaction.channelId,
 			guildId: interaction.guild.id,
 		});
