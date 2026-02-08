@@ -84,6 +84,14 @@ export default {
 
 		if (rawDuration) {
 			const duration = parseDuration(rawDuration);
+			if (duration === null) {
+				await interaction.reply({
+					content:
+						"Sorry, I didn't understand that duration. Some correct usage examples are: '10d', '30m', '5h'",
+					flags: MessageFlags.Ephemeral,
+				});
+				return;
+			}
 			await interaction.reply({
 				content: "Temp bans are not implemented yet.",
 				flags: MessageFlags.Ephemeral,
