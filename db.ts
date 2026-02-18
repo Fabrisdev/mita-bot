@@ -6,7 +6,7 @@ import { client } from "./client";
 import { CountingCache } from "./commands/counting";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
-import type { DB } from "./db.types.ts";
+import type { DB } from "./db.types";
 import { convexUrl } from "./environment";
 
 const convex = new ConvexClient(convexUrl());
@@ -23,14 +23,12 @@ export const db = new Kysely<DB>({
 });
 
 export namespace Settings {
-	export async function getByGuild(
-		guildId: string,
-	): Promise<GuildSettings | null> {
-		const [row] =
-			await sql`SELECT * FROM guild_settings WHERE guild_id = ${guildId}`.then(
-				(rows) => rows[0],
-			);
-		return row ?? null;
+	export async function getByGuild(guildId: string) {
+		return db
+			.selectFrom("guild_settings")
+			.selectAll()
+			.where("guild_id", "=", guildId)
+			.executeTakeFirst();
 	}
 }
 
