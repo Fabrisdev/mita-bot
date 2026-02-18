@@ -1,42 +1,53 @@
+import { sql } from "bun";
 import { ConvexClient } from "convex/browser";
 import { client } from "./client";
 import { CountingCache } from "./commands/counting";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
 import { convexUrl } from "./environment";
+import type { GuildSettings, History } from "./tables-to-type";
 
 const convex = new ConvexClient(convexUrl());
 
 export namespace Settings {
-	export async function getByGuild(guildId: string) {
-		return await convex.query(api.functions.guildSettings.getByGuild, {
-			guildId,
-		});
+	export async function getByGuild(
+		guildId: string,
+	): Promise<GuildSettings | null> {
+		const [row] =
+			await sql`SELECT * FROM guild_settings WHERE guild_id = ${guildId}`.then(
+				(rows) => rows[0],
+			);
+		return row ?? null;
 	}
 }
 
 export async function setAlertsChannel(guildId: string, channelId: string) {
-	await convex.mutation(api.functions.guildSettings.setAlertsChannel, {
-		guildId,
-		channelId,
-	});
+	await sql`
+    INSERT INTO guild_settings (guild_id, alerts_channel_id)
+    VALUES (${guildId}, ${channelId})
+    ON CONFLICT (guild_id)
+    DO UPDATE SET alerts_channel_id = EXCLUDED.alerts_channel_id
+  `;
 }
 
 export async function getAlertsChannel(guildId: string) {
-	return await convex
-		.query(api.functions.guildSettings.getByGuild, {
-			guildId,
-		})
-		.then((row) => row?.alertsChannelId);
+	return (
+		(await Settings.getByGuild(guildId).then(
+			(data) => data?.alerts_channel_id,
+		)) ?? undefined
+	);
 }
 
 export async function getUserHistory(guildId: string, userId: string) {
-	return await convex
-		.query(api.functions.history.getUserHistory, {
-			guildId,
-			userId,
-		})
-		.then((row) => row?.history);
+	const rows =
+		(await sql`SELECT * FROM history WHERE user_id = ${userId} AND guild_id = ${guildId}`) as History[];
+	if (rows.length === 0) return undefined;
+	return rows.map((row) => ({
+		at: row.at.getTime(),
+		moderatorId: row.moderator_id,
+		reason: row.reason,
+		type: row.type,
+	}));
 }
 
 export async function addToUserHistory(
