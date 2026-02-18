@@ -16,17 +16,17 @@ async function ticketSystem(message: Message) {
 	if (message.channel.type !== ChannelType.GuildText) return;
 	if (!message.channel.parent) return;
 	if (message.channel.parent.name !== "Tickets") return;
-	const ticket = await Ticket.findByChannelName({
+	const ticket = await Ticket.findByChannelId({
 		guildId,
-		channelName: message.channel.name,
+		channelId: message.channel.id,
 	});
-	if (ticket === null) return;
+	if (ticket === undefined) return;
 	await Ticket.store({
-		ticketId: ticket._id,
+		ticketId: ticket.id,
 		message: {
 			content: message.content,
 			authorId: message.author.id,
-			sentAt: message.createdTimestamp,
+			sentAt: new Date(message.createdTimestamp),
 		},
 	});
 }

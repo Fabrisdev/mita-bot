@@ -92,7 +92,7 @@ export default {
 			guildId: interaction.guild.id,
 			roleId: role.id,
 			userId: user.id,
-			expiresOn,
+			expiresOn: new Date(expiresOn),
 		});
 		setTimeout(() => {
 			TempRoles.remove(id);

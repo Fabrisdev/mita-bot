@@ -10,7 +10,6 @@ import {
 	PermissionsBitField,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
-import type { Id } from "../convex/_generated/dataModel";
 import { Ticket } from "../db";
 import { Log } from "../log";
 
@@ -100,7 +99,7 @@ async function rejectMarryButtonInteraction(
 async function closeTicketButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
 ) {
-	const id = interaction.customId.split(":")[1] as Id<"tickets">;
+	const id = Number(interaction.customId.split(":")[1]);
 	await Ticket.close(id);
 	await interaction.channel?.delete();
 }

@@ -6,7 +6,6 @@ import {
 	type Guild,
 	MessageFlags,
 } from "discord.js";
-import type { Id } from "../convex/_generated/dataModel";
 import { Ticket } from "../db";
 import type { Command } from "./types";
 
@@ -18,13 +17,14 @@ export default {
 		const category = await findTicketsCategory(interaction.guild);
 		const id = await Ticket.open({
 			guildId: interaction.guild.id,
+			channelId: interaction.channelId,
 			ownerId: interaction.user.id,
 		});
 		const channel = await createChannel({
 			categoryId: category.id,
 			guild: interaction.guild,
 			userId: interaction.user.id,
-			name: id,
+			name: String(id),
 		});
 		const closeButton = createCloseButton(id);
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -91,7 +91,7 @@ async function createChannel({
 	});
 }
 
-function createCloseButton(ticketId: Id<"tickets">) {
+function createCloseButton(ticketId: number) {
 	return new ButtonBuilder()
 		.setCustomId(`close-ticket:${ticketId}`)
 		.setLabel("Close ticket")

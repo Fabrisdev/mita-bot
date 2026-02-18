@@ -103,14 +103,17 @@ export namespace Ticket {
 		channelId: string;
 		ownerId: string;
 	}) {
-		return db
+		const [inserted] = await db
 			.insertInto("tickets")
 			.values({
 				channel_id: channelId,
 				guild_id: guildId,
 				owner_id: ownerId,
 			})
+			.returning("id")
 			.execute();
+		if (!inserted) throw new Error("Couldn't insert into tickets");
+		return inserted.id;
 	}
 	export async function close(ticketId: number) {
 		return db
@@ -207,7 +210,7 @@ export namespace TempRoles {
 		roleId: string;
 		expiresOn: Date;
 	}) {
-		await db
+		const [inserted] = await db
 			.insertInto("temp_roles")
 			.values({
 				guild_id: data.guildId,
@@ -215,7 +218,10 @@ export namespace TempRoles {
 				role_id: data.roleId,
 				expires_on: data.expiresOn,
 			})
+			.returning("id")
 			.execute();
+		if (!inserted) throw new Error("Couldn't insert into temp role");
+		return inserted.id;
 	}
 
 	async function markAsRemoved(id: number) {
@@ -371,11 +377,12 @@ export namespace CountingDB {
 			.execute();
 	}
 	export async function getChannel(guildId: string) {
-		return db
+		const channelId = await db
 			.selectFrom("guild_settings")
 			.select("counting_channel_id")
 			.where("guild_id", "=", guildId)
 			.executeTakeFirst()
 			.then((row) => row?.counting_channel_id);
+		return channelId ?? undefined;
 	}
 }
