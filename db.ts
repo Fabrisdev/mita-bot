@@ -1,4 +1,3 @@
-import { sql } from "bun";
 import { ConvexClient } from "convex/browser";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
@@ -7,7 +6,7 @@ import { CountingCache } from "./commands/counting";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
 import type { DB } from "./db.types";
-import { convexUrl } from "./environment";
+import { convexUrl, guildId } from "./environment";
 
 const convex = new ConvexClient(convexUrl());
 
@@ -86,96 +85,111 @@ type Incident = {
 };
 
 export namespace Ticket {
-	export async function findByChannelName({
+	export async function findByChannelId({
 		guildId,
-		channelName,
+		channelId,
 	}: {
 		guildId: string;
-		channelName: string;
+		channelId: string;
 	}) {
-		const ticket = await convex.query(
-			api.functions.tickets.getTicketByChannelName,
-			{
-				channelName,
-			},
-		);
-		if (ticket === null) return null;
-		if (ticket.guildId !== guildId) return null;
-		return ticket;
+		return await db
+			.selectFrom("tickets")
+			.selectAll()
+			.where("channel_id", "=", channelId)
+			.where("guild_id", "=", guildId)
+			.executeTakeFirst();
 	}
 
 	export async function open({
 		guildId,
 		ownerId,
+		channelId,
 	}: {
 		guildId: string;
+		channelId: string;
 		ownerId: string;
 	}) {
-		return await convex.mutation(api.functions.tickets.openTicket, {
-			guildId,
-			ownerId,
-		});
+		return db
+			.insertInto("tickets")
+			.values({
+				channel_id: channelId,
+				guild_id: guildId,
+				owner_id: ownerId,
+			})
+			.execute();
 	}
-	export async function close(ticketId: Id<"tickets">) {
-		return await convex.mutation(api.functions.tickets.closeTicket, {
-			ticketId,
-		});
+	export async function close(ticketId: number) {
+		return db
+			.updateTable("tickets")
+			.set({
+				status: "closed",
+			})
+			.where("id", "=", ticketId)
+			.execute();
 	}
 	export async function store({
 		ticketId,
 		message,
 	}: {
-		ticketId: Id<"tickets">;
+		ticketId: number;
 		message: {
 			authorId: string;
 			content: string;
-			sentAt: number;
+			sentAt: Date;
 		};
 	}) {
-		return await convex.mutation(api.functions.ticketMessages.storeMessage, {
-			message,
-			ticketId,
-		});
+		await db
+			.insertInto("ticket_messages")
+			.values({
+				ticket_id: ticketId,
+				author_id: message.authorId,
+				content: message.content,
+				sent_at: message.sentAt,
+			})
+			.execute();
 	}
 
 	export async function all(guildId: string) {
-		const tickets = await convex.query(
-			api.functions.tickets.getTicketsFromGuild,
-			{
-				guildId,
-			},
-		);
+		const ticketRows = await db
+			.selectFrom("tickets")
+			.selectAll()
+			.where("guild_id", "=", guildId)
+			.execute();
+
+		const ticketsIds = ticketRows.map((ticket) => ticket.id);
+		const messages = await db
+			.selectFrom("ticket_messages")
+			.selectAll()
+			.where("ticket_id", "in", ticketsIds)
+			.execute();
+
+		const messagesByTicket: Record<number, typeof messages> = {};
+
+		for (const msg of messages) {
+			if (!(msg.ticket_id in messagesByTicket)) {
+				messagesByTicket[msg.ticket_id] = [];
+			}
+			//@ts-expect-error
+			messagesByTicket[msg.ticket_id].push(msg);
+		}
+
+		const tickets = ticketRows.map((ticket) => ({
+			...ticket,
+			messages: messagesByTicket[ticket.id] || [],
+		}));
+
 		const usersInfo = new Map<string, UserInfo>();
 		for (const ticket of tickets) {
 			for (const message of ticket.messages) {
-				if (!usersInfo.has(message.authorId)) {
-					const userInfo = await getUserInfo(message.authorId);
-					usersInfo.set(message.authorId, userInfo);
+				if (!usersInfo.has(message.author_id)) {
+					const userInfo = await getUserInfo(message.author_id);
+					usersInfo.set(message.author_id, userInfo);
 				}
 				(message as unknown as object & { user: UserInfo }).user =
-					usersInfo.get(message.authorId) as UserInfo;
+					usersInfo.get(message.author_id) as UserInfo;
 			}
 		}
 		return tickets;
-	}
-
-	export async function channelsFrom(guildId: string) {
-		const tickets = await all(guildId);
-		const ticketIds = tickets
-			.filter((ticket) => ticket.status === "open")
-			.map((ticket) => ticket._id);
-		return (
-			await Promise.all(
-				ticketIds.flatMap(async (id) => {
-					const guild = await client.guilds.fetch(guildId);
-					const channel = guild.channels.cache.find(
-						(channel) => channel.name === id,
-					);
-					if (channel) return { channelId: channel.id, ticketId: id };
-					return null;
-				}),
-			)
-		).filter((channel) => channel !== null);
 	}
 }
 
@@ -197,34 +211,51 @@ export namespace TempRoles {
 		guildId: string;
 		userId: string;
 		roleId: string;
-		expiresOn: number;
+		expiresOn: Date;
 	}) {
-		return await convex.mutation(api.functions.tempRoles.insertTempRole, data);
+		await db
+			.insertInto("temp_roles")
+			.values({
+				guild_id: data.guildId,
+				user_id: data.userId,
+				role_id: data.roleId,
+				expires_on: data.expiresOn,
+			})
+			.execute();
 	}
 
-	async function markAsRemoved(id: Id<"tempRoles">) {
-		return await convex.mutation(api.functions.tempRoles.markAsRemoved, { id });
+	async function markAsRemoved(id: number) {
+		await db
+			.updateTable("temp_roles")
+			.set("already_removed", true)
+			.where("id", "=", id)
+			.execute();
 	}
 
 	export async function getRolesToRemove() {
-		return await convex.query(api.functions.tempRoles.getRolesToRemove, {
-			now: Date.now(),
-		});
+		return await db
+			.selectFrom("temp_roles")
+			.selectAll()
+			.where("already_removed", "=", false)
+			.where("expires_on", "<=", new Date(Date.now()))
+			.execute();
 	}
 
-	export async function remove(id: Id<"tempRoles">) {
+	export async function remove(id: number) {
 		console.log(`Marked role ${id} as removed.`);
 		await markAsRemoved(id);
-		const role = await convex.query(api.functions.tempRoles.getRoleToRemove, {
-			id,
-		});
-		if (role === null) return;
-		const guild = await client.guilds.fetch(role.guildId).catch(() => null);
+		const role = await db
+			.selectFrom("temp_roles")
+			.selectAll()
+			.where("id", "=", id)
+			.executeTakeFirst();
+		if (role === undefined) return;
+		const guild = await client.guilds.fetch(role.guild_id).catch(() => null);
 		if (guild === null) return;
-		const member = await guild.members.fetch(role.userId).catch(() => null);
+		const member = await guild.members.fetch(role.user_id).catch(() => null);
 		if (member === null) return;
-		await member.roles.remove(role.roleId).catch(() => null);
-		console.log(`Removed role ${role.roleId} from user ${role.userId}.`);
+		await member.roles.remove(role.role_id).catch(() => null);
+		console.log(`Removed role ${role.role_id} from user ${role.user_id}.`);
 	}
 }
 
@@ -233,26 +264,44 @@ export namespace Birthday {
 		guildId: string;
 		channelId: string;
 	}) {
-		return await convex.mutation(
-			api.functions.guildSettings.setBirthdayChannel,
-			data,
-		);
+		await db
+			.insertInto("guild_settings")
+			.values({
+				guild_id: data.guildId,
+				birthday_channel_id: data.channelId,
+			})
+			.onConflict((oc) =>
+				oc.column("guild_id").doUpdateSet({
+					birthday_channel_id: data.channelId,
+				}),
+			)
+			.execute();
 	}
 
 	export async function setRole(data: { guildId: string; roleId: string }) {
-		return await convex.mutation(
-			api.functions.guildSettings.setBirthdayRole,
-			data,
-		);
+		await db
+			.insertInto("guild_settings")
+			.values({
+				guild_id: data.guildId,
+				birthday_role_id: data.roleId,
+			})
+			.onConflict((oc) =>
+				oc.column("guild_id").doUpdateSet({
+					birthday_role_id: data.roleId,
+				}),
+			)
+			.execute();
 	}
 
 	export async function todaysBirthdays(guildId: string) {
 		const today = getToday();
-		return await convex.query(api.functions.birthdays.getBirthdaysToday, {
-			day: today.day,
-			month: today.month,
-			guildId,
-		});
+		return await db
+			.selectFrom("birthdays")
+			.selectAll()
+			.where("day", "=", today.day)
+			.where("month", "=", today.month)
+			.where("guild_id", "=", guildId)
+			.execute();
 	}
 
 	function getToday() {
@@ -264,11 +313,19 @@ export namespace Birthday {
 		};
 	}
 
-	export async function updateLastCelebratedYear(id: Id<"birthdays">) {
-		return await convex.mutation(
-			api.functions.birthdays.updateLastCelebratedYear,
-			{ id, year: new Date().getFullYear() },
-		);
+	export async function updateLastCelebratedYear({
+		guildId,
+		userId,
+	}: {
+		guildId: string;
+		userId: string;
+	}) {
+		await db
+			.updateTable("birthdays")
+			.set("last_celebrated_year", new Date().getFullYear())
+			.where("guild_id", "=", guildId)
+			.where("user_id", "=", userId)
+			.execute();
 	}
 
 	export async function setBirthday(data: {
@@ -277,7 +334,21 @@ export namespace Birthday {
 		guildId: string;
 		userId: string;
 	}) {
-		return await convex.mutation(api.functions.birthdays.setBirthday, data);
+		await db
+			.insertInto("birthdays")
+			.values({
+				day: data.day,
+				month: data.month,
+				guild_id: data.guildId,
+				user_id: data.userId,
+			})
+			.onConflict((oc) =>
+				oc.columns(["guild_id", "user_id"]).doUpdateSet({
+					day: data.day,
+					month: data.month,
+				}),
+			)
+			.execute();
 	}
 }
 
@@ -291,16 +362,26 @@ export namespace CountingDB {
 			currentNumber: 0,
 			lastSenderId: "",
 		});
-		return await convex.mutation(
-			api.functions.guildSettings.setCountingChannel,
-			data,
-		);
+
+		await db
+			.insertInto("guild_settings")
+			.values({
+				guild_id: data.guildId,
+				counting_channel_id: data.channelId,
+			})
+			.onConflict((oc) =>
+				oc.column("guild_id").doUpdateSet({
+					counting_channel_id: data.channelId,
+				}),
+			)
+			.execute();
 	}
 	export async function getChannel(guildId: string) {
-		return await convex
-			.query(api.functions.guildSettings.getByGuild, {
-				guildId,
-			})
-			.then((row) => row?.countingChannelId);
+		return db
+			.selectFrom("guild_settings")
+			.select("counting_channel_id")
+			.where("guild_id", "=", guildId)
+			.executeTakeFirst()
+			.then((row) => row?.counting_channel_id);
 	}
 }

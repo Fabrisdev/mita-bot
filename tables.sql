@@ -11,7 +11,7 @@ CREATE TABLE birthdays(
   user_id TEXT,
   day INT NOT NULL,
   month INT NOT NULL,
-  last_celebrated_year INT NOT NULL,
+  last_celebrated_year INT,
   PRIMARY KEY (guild_id, user_id)
 );
 
@@ -38,6 +38,7 @@ CREATE TYPE ticket_status AS ENUM('open', 'closed');
 CREATE TABLE tickets(
   id SERIAL PRIMARY KEY,
   guild_id TEXT NOT NULL,
+  channel_id TEXT NOT NULL,
   owner_id TEXT NOT NULL,
   status ticket_status NOT NULL DEFAULT 'open',
   closed_at TIMESTAMPTZ
@@ -45,7 +46,7 @@ CREATE TABLE tickets(
 
 CREATE TABLE ticket_messages(
   id SERIAL PRIMARY KEY,
-  ticket_id INTEGER REFERENCES tickets(id),
+  ticket_id INTEGER REFERENCES tickets(id) NOT NULL,
   author_id TEXT NOT NULL,
   content TEXT NOT NULL,
   sent_at TIMESTAMPTZ NOT NULL
