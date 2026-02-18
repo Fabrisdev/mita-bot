@@ -57,6 +57,6 @@ CREATE TABLE temp_roles(
   guild_id TEXT NOT NULL,
   user_id TEXT NOT NULL,
   role_id TEXT NOT NULL,
-  expires_on TIMESTAMPTZ,
+  expires_on TIMESTAMPTZ NOT NULL,
   already_removed BOOLEAN DEFAULT false
 );
