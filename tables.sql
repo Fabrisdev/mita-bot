@@ -41,7 +41,8 @@ CREATE TABLE tickets(
   channel_id TEXT NOT NULL,
   owner_id TEXT NOT NULL,
   status ticket_status NOT NULL DEFAULT 'open',
-  closed_at TIMESTAMPTZ
+  closed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE ticket_messages(

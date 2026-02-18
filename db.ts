@@ -120,6 +120,7 @@ export namespace Ticket {
 			.updateTable("tickets")
 			.set({
 				status: "closed",
+				closed_at: new Date(Date.now()),
 			})
 			.where("id", "=", ticketId)
 			.execute();
