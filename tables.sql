@@ -28,7 +28,7 @@ CREATE TABLE history(
   guild_id TEXT NOT NULL,
   user_id TEXT NOT NULL,
   type moderation_type NOT NULL,
-  at TIMESTAMPTZ NOT NULL,
+  at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   moderator_id TEXT NOT NULL,
   reason TEXT NOT NULL
 );

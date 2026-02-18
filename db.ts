@@ -33,32 +33,33 @@ export namespace Settings {
 }
 
 export async function setAlertsChannel(guildId: string, channelId: string) {
-	await sql`
-    INSERT INTO guild_settings (guild_id, alerts_channel_id)
-    VALUES (${guildId}, ${channelId})
-    ON CONFLICT (guild_id)
-    DO UPDATE SET alerts_channel_id = EXCLUDED.alerts_channel_id
-  `;
+	await db
+		.insertInto("guild_settings")
+		.values({ guild_id: guildId, alerts_channel_id: channelId })
+		.onConflict((oc) =>
+			oc.column("guild_id").doUpdateSet({
+				alerts_channel_id: channelId,
+			}),
+		)
+		.execute();
 }
 
 export async function getAlertsChannel(guildId: string) {
-	return (
-		(await Settings.getByGuild(guildId).then(
-			(data) => data?.alerts_channel_id,
-		)) ?? undefined
-	);
+	return db
+		.selectFrom("guild_settings")
+		.select("alerts_channel_id")
+		.where("guild_id", "=", guildId)
+		.executeTakeFirst()
+		.then((row) => row?.alerts_channel_id);
 }
 
 export async function getUserHistory(guildId: string, userId: string) {
-	const rows =
-		(await sql`SELECT * FROM history WHERE user_id = ${userId} AND guild_id = ${guildId}`) as History[];
-	if (rows.length === 0) return undefined;
-	return rows.map((row) => ({
-		at: row.at.getTime(),
-		moderatorId: row.moderator_id,
-		reason: row.reason,
-		type: row.type,
-	}));
+	return await db
+		.selectFrom("history")
+		.select(["at", "moderator_id", "reason", "type"])
+		.where("user_id", "=", userId)
+		.where("guild_id", "=", guildId)
+		.execute();
 }
 
 export async function addToUserHistory(
@@ -66,14 +67,16 @@ export async function addToUserHistory(
 	userId: string,
 	incident: Incident,
 ) {
-	return await convex.mutation(api.functions.history.addToUserHistory, {
-		guildId,
-		userId,
-		incident: {
-			...incident,
-			at: Date.now(),
-		},
-	});
+	await db
+		.insertInto("history")
+		.values({
+			guild_id: guildId,
+			user_id: userId,
+			type: incident.type,
+			moderator_id: incident.moderatorId,
+			reason: incident.reason,
+		})
+		.execute();
 }
 
 type Incident = {
