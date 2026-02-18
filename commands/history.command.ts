@@ -17,7 +17,7 @@ export default {
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
 		const history = await getUserHistory(interaction.guild.id, user.id);
-		if (history === undefined) {
+		if (history.length === 0) {
 			interaction.reply("User's history is clean.");
 			return;
 		}
