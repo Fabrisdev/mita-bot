@@ -1,13 +1,26 @@
 import { sql } from "bun";
 import { ConvexClient } from "convex/browser";
+import { Kysely, PostgresDialect } from "kysely";
+import { Pool } from "pg";
 import { client } from "./client";
 import { CountingCache } from "./commands/counting";
 import { api } from "./convex/_generated/api";
 import type { Id } from "./convex/_generated/dataModel";
+import type { DB } from "./db.types.ts";
 import { convexUrl } from "./environment";
-import type { GuildSettings, History } from "./tables-to-type";
 
 const convex = new ConvexClient(convexUrl());
+
+const dialect = new PostgresDialect({
+	pool: new Pool({
+		connectionString: process.env.DATABASE_URL,
+		max: 10,
+	}),
+});
+
+export const db = new Kysely<DB>({
+	dialect,
+});
 
 export namespace Settings {
 	export async function getByGuild(
