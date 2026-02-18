@@ -16,6 +16,7 @@ async function ticketSystem(message: Message) {
 	if (message.channel.type !== ChannelType.GuildText) return;
 	if (!message.channel.parent) return;
 	if (message.channel.parent.name !== "Tickets") return;
+	if (message.author.bot) return;
 	const ticket = await Ticket.findByChannelId({
 		guildId,
 		channelId: message.channel.id,

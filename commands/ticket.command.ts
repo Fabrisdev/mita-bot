@@ -15,16 +15,16 @@ export default {
 	permissions: [],
 	run: async (interaction) => {
 		const category = await findTicketsCategory(interaction.guild);
-		const id = await Ticket.open({
-			guildId: interaction.guild.id,
-			channelId: interaction.channelId,
-			ownerId: interaction.user.id,
-		});
 		const channel = await createChannel({
 			categoryId: category.id,
 			guild: interaction.guild,
 			userId: interaction.user.id,
-			name: String(id),
+			name: interaction.user.username,
+		});
+		const id = await Ticket.open({
+			guildId: interaction.guild.id,
+			channelId: channel.id,
+			ownerId: interaction.user.id,
 		});
 		const closeButton = createCloseButton(id);
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
