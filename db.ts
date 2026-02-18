@@ -1,14 +1,8 @@
-import { ConvexClient } from "convex/browser";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import { client } from "./client";
 import { CountingCache } from "./commands/counting";
-import { api } from "./convex/_generated/api";
-import type { Id } from "./convex/_generated/dataModel";
 import type { DB } from "./db.types";
-import { convexUrl, guildId } from "./environment";
-
-const convex = new ConvexClient(convexUrl());
 
 const dialect = new PostgresDialect({
 	pool: new Pool({
