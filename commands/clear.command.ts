@@ -1,6 +1,7 @@
 import {
 	ApplicationCommandOptionType,
 	ChannelType,
+	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
 import type { Command } from "./types";
@@ -23,7 +24,7 @@ export default {
 		await interaction.channel.bulkDelete(amount);
 		await interaction.reply({
 			content: `${amount} messages cleared.`,
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 	},
 } satisfies Command<"guild">;
