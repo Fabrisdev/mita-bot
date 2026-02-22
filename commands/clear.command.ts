@@ -8,7 +8,7 @@ import type { Command } from "./types";
 
 export default {
 	description: "Bulk delete messages on a channel",
-	permissions: [PermissionFlagsBits.ModerateMembers],
+	permissions: [PermissionFlagsBits.Administrator],
 	environment: "guild",
 	options: [
 		{
