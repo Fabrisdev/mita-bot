@@ -62,3 +62,7 @@ CREATE TABLE temp_roles(
   expires_on TIMESTAMPTZ NOT NULL,
   already_removed BOOLEAN DEFAULT false
 );
+
+CREATE TABLE already_sent_reddit_posts(
+  id TEXT PRIMARY KEY
+);

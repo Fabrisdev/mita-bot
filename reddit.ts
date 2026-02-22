@@ -1,8 +1,8 @@
 import { EmbedBuilder } from "discord.js";
 import { client } from "./client";
-import { Settings } from "./db";
+import { Reddit, Settings } from "./db";
 import { Log } from "./log";
-import type { Data2, RedditData } from "./reddit.types";
+import type { Children, Data2, RedditData } from "./reddit.types";
 
 export async function publishRedditPosts() {
 	const embeds = await getEmbeds();
@@ -25,9 +25,8 @@ async function getEmbeds() {
 	const posts = await fetchPosts();
 	if (posts === null) return null;
 	const embeds: EmbedBuilder[] = [];
-	for (const item of posts.data.children) {
-		const d = item.data;
-		const embed = formatPostIntoEmbed(d);
+	for (const post of posts) {
+		const embed = formatPostIntoEmbed(post.data);
 		embeds.push(embed);
 	}
 	return embeds;
@@ -54,6 +53,7 @@ function formatPostIntoEmbed(d: Data2) {
 }
 
 async function fetchPosts() {
+	console.log("Fetching Reddit posts...");
 	const url = "https://www.reddit.com/r/MiSideReddit/hot.json";
 
 	const posts = (await fetch(url, {
@@ -69,7 +69,15 @@ async function fetchPosts() {
 	if (posts === null) {
 		Log.error("Failed fetching Reddit posts. More info below:");
 		Log.error(posts);
+		return null;
 	}
-
-	return posts;
+	console.log(`${posts.data.children.length} posts fetched.`);
+	const filteredPosts: Children[] = [];
+	for (const post of posts.data.children) {
+		const isNew = await Reddit.markAsSentIfNew(post.data.id);
+		if (!isNew) continue;
+		filteredPosts.push(post);
+	}
+	console.log(`After filtering, ${filteredPosts.length} posts sent to Guilds.`);
+	return filteredPosts;
 }

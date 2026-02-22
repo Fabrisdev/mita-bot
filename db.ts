@@ -38,6 +38,15 @@ export namespace Settings {
 			)
 			.execute();
 	}
+	export async function getGuildsWithSetRedditFeedChannel() {
+		return (await db
+			.selectFrom("guild_settings")
+			.select("reddit_feed_channel_id")
+			.where("reddit_feed_channel_id", "is not", null)
+			.execute()) as {
+			reddit_feed_channel_id: string;
+		}[];
+	}
 }
 
 export async function setAlertsChannel(guildId: string, channelId: string) {
@@ -400,5 +409,22 @@ export namespace CountingDB {
 			.executeTakeFirst()
 			.then((row) => row?.counting_channel_id);
 		return channelId ?? undefined;
+	}
+}
+
+export namespace Reddit {
+	/**
+	 *
+	 * @param postId The post's id.
+	 * @returns True if it wasnt sent already (Marked as sent succesfully). Otherwise, false.
+	 */
+	export async function markAsSentIfNew(postId: string) {
+		const data = await db
+			.insertInto("already_sent_reddit_posts")
+			.values({ id: postId })
+			.onConflict((oc) => oc.doNothing())
+			.returning("id")
+			.executeTakeFirst();
+		return !!data;
 	}
 }
