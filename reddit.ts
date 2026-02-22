@@ -23,7 +23,7 @@ export async function publishRedditPosts() {
 			.setURL(`https://reddit.com${d.permalink}`)
 			.setDescription(d.selftext ? d.selftext.slice(0, 2000) : null)
 			.setFooter({
-				text: `👍 ${d.score} | u/${d.author}`,
+				text: `⬆️ ${d.score} | u/${d.author}`,
 			});
 
 		if (image) {

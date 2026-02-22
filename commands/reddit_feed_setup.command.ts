@@ -11,6 +11,6 @@ export default {
 			guildId: interaction.guild.id,
 			channelId: interaction.channelId,
 		});
-		interaction.reply("Current channel set as reddit feed!");
+		await interaction.reply("Current channel set as reddit feed!");
 	},
 } satisfies Command<"guild">;
