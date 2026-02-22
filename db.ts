@@ -30,7 +30,10 @@ export namespace Settings {
 	}) {
 		await db
 			.insertInto("guild_settings")
-			.values({ guild_id: data.guildId, alerts_channel_id: data.channelId })
+			.values({
+				guild_id: data.guildId,
+				reddit_feed_channel_id: data.channelId,
+			})
 			.onConflict((oc) =>
 				oc.column("guild_id").doUpdateSet({
 					reddit_feed_channel_id: data.channelId,
