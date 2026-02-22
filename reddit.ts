@@ -74,6 +74,7 @@ async function fetchPosts() {
 	console.log(`${posts.data.children.length} posts fetched.`);
 	const filteredPosts: Children[] = [];
 	for (const post of posts.data.children) {
+		if (post.data.score < 100) continue;
 		const isNew = await Reddit.markAsSentIfNew(post.data.id);
 		if (!isNew) continue;
 		filteredPosts.push(post);
