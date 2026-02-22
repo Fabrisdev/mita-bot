@@ -3,7 +3,8 @@ CREATE TABLE guild_settings(
   alerts_channel_id TEXT,
   birthday_channel_id TEXT,
   birthday_role_id TEXT,
-  counting_channel_id TEXT
+  counting_channel_id TEXT,
+  reddit_feed_channel_id TEXT
 );
 
 CREATE TABLE birthdays(
