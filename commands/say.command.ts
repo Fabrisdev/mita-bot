@@ -3,6 +3,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
+import { isAwaitKeyword } from "typescript";
 import type { Command } from "./types";
 
 export default {
@@ -42,6 +43,25 @@ export default {
 			});
 			return;
 		}
+
+		const me = interaction.guild.members.me;
+		if (!me) {
+			await interaction.reply({
+				content: "Wasn't able to check if I have access to the channel or not.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+		const permissions = channel.permissionsFor(me);
+
+		if (!permissions?.has(PermissionFlagsBits.ViewChannel)) {
+			await interaction.reply({
+				content: "I can't see that channel.",
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
 		await channel.send(message);
 		await interaction.reply({
 			content: "Message sent!",
