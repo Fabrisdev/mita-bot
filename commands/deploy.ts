@@ -1,4 +1,9 @@
-import { REST, Routes, SlashCommandBuilder } from "discord.js";
+import {
+	InteractionContextType,
+	REST,
+	Routes,
+	SlashCommandBuilder,
+} from "discord.js";
 import { clientId, guildId, token } from "../environment";
 import { fetchCommands } from "./handler";
 
@@ -11,7 +16,12 @@ const commandsData = Array.from(commands).map(([name, command]) => {
 	const builder = new SlashCommandBuilder()
 		.setName(name)
 		.setDescription(command.description)
-		.setDefaultMemberPermissions(permissions);
+		.setDefaultMemberPermissions(permissions)
+		.setContexts(
+			command.environment === "guild"
+				? InteractionContextType.Guild
+				: InteractionContextType.BotDM,
+		);
 	if (!command.options) return builder;
 
 	const json = builder.toJSON();
