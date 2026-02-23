@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
-import { getUserHistory } from "../db";
+import { History } from "../database/history";
 import type { Command } from "./types";
 
 export default {
@@ -16,7 +16,7 @@ export default {
 	],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
-		const history = await getUserHistory(interaction.guild.id, user.id);
+		const history = await History.fromUser(user.id);
 		if (history.length === 0) {
 			interaction.reply("User's history is clean.");
 			return;

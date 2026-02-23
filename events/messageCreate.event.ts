@@ -2,35 +2,11 @@ import { ChannelType, type Message } from "discord.js";
 import { evaluate } from "mathjs";
 import { Counting } from "../commands/counting";
 import { generateTomatoImage } from "../commands/tomato.command";
-import { Ticket } from "../db";
 import { cycle } from "../utils";
 
 export default async (message: Message) => {
-	ticketSystem(message);
 	CountingSystem.run(message);
 };
-
-async function ticketSystem(message: Message) {
-	if (!message.guild) return;
-	const guildId = message.guild.id;
-	if (message.channel.type !== ChannelType.GuildText) return;
-	if (!message.channel.parent) return;
-	if (message.channel.parent.name !== "Tickets") return;
-	if (message.author.bot) return;
-	const ticket = await Ticket.findByChannelId({
-		guildId,
-		channelId: message.channel.id,
-	});
-	if (ticket === undefined) return;
-	await Ticket.store({
-		ticketId: ticket.id,
-		message: {
-			content: message.content,
-			authorId: message.author.id,
-			sentAt: new Date(message.createdTimestamp),
-		},
-	});
-}
 
 export namespace CountingSystem {
 	const positiveReactions = cycle(["✅", "⭐", "🔥", "🗣️"] as const);

@@ -1,23 +1,20 @@
 import { EmbedBuilder } from "discord.js";
 import { client } from "./client";
-import { Reddit, Settings } from "./db";
+import { Reddit } from "./database/reddit";
 import { Log } from "./log";
 import type { Children, Data2, RedditData } from "./reddit.types";
 
 export async function publishRedditPosts() {
 	const embeds = await getEmbeds();
 	if (embeds === null) return;
-	const channelsInfo = await Settings.getGuildsWithSetRedditFeedChannel();
-	for (const channelInfo of channelsInfo) {
-		const channel = await client.channels
-			.fetch(channelInfo.reddit_feed_channel_id)
-			.catch(() => null);
-		if (channel === null || !channel.isSendable()) return;
-		for (const embed of embeds) {
-			await channel.send({
-				embeds: [embed],
-			});
-		}
+	const channel = await client.channels
+		.fetch("1475223863297314816")
+		.catch(() => null);
+	if (channel === null || !channel.isSendable()) return;
+	for (const embed of embeds) {
+		await channel.send({
+			embeds: [embed],
+		});
 	}
 }
 

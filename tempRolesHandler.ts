@@ -1,4 +1,4 @@
-import { TempRoles } from "./db";
+import { TempRoles } from "./database/tempRoles";
 
 export async function registerTempRoleTimeouts() {
 	console.log("Registering temporal role timeouts...");

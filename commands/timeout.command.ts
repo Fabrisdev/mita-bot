@@ -4,7 +4,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
-import { addToUserHistory } from "../db";
+import { History } from "../database/history";
 import { parseDuration } from "../utils";
 import { showAlert } from "./alert";
 import type { Command } from "./types";
@@ -106,10 +106,9 @@ export default {
 			`The user ${user.tag} has been timed out with the reason: ${reason}`,
 		);
 		await showAlert(
-			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has timed out ${user.tag} for ${durationText} with the reason: ${reason}`,
 		);
-		await addToUserHistory(interaction.guild.id, user.id, {
+		await History.addToUser(user.id, {
 			moderatorId: interaction.user.id,
 			reason,
 			type: "timeout",

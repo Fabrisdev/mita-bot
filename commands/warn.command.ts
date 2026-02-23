@@ -4,7 +4,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
-import { addToUserHistory } from "../db";
+import { History } from "../database/history";
 import { showAlert } from "./alert";
 import type { Command } from "./types";
 
@@ -52,7 +52,7 @@ export default {
 			return;
 		}
 
-		await addToUserHistory(interaction.guild.id, user.id, {
+		await History.addToUser(user.id, {
 			moderatorId: interaction.user.id,
 			reason,
 			type: "warn",
@@ -66,7 +66,6 @@ export default {
 			)
 			.catch(() => null);
 		await showAlert(
-			interaction.guild.id,
 			`Moderator ${interaction.user.tag} has warned ${user.tag} with the reason: ${reason}`,
 		);
 	},

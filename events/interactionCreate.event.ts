@@ -9,7 +9,6 @@ import {
 	MessageFlags,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
-import { Ticket } from "../db";
 import { Log } from "../log";
 
 const commands = await fetchCommands();
@@ -23,7 +22,7 @@ export default async (interaction: Interaction<CacheType>) => {
 async function handleButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
 ) {
-	if (interaction.customId.startsWith("close-ticket:")) {
+	if (interaction.customId === "close-ticket") {
 		await closeTicketButtonInteraction(interaction);
 		return;
 	}
@@ -98,8 +97,6 @@ async function rejectMarryButtonInteraction(
 async function closeTicketButtonInteraction(
 	interaction: ButtonInteraction<CacheType>,
 ) {
-	const id = Number(interaction.customId.split(":")[1]);
-	await Ticket.close(id);
 	await interaction.channel?.delete();
 }
 

@@ -1,6 +1,6 @@
 import { ChannelType } from "discord.js";
 import { client } from "./client";
-import { Birthday, Settings } from "./db";
+import { Birthday } from "./database/birthday";
 
 export async function setupBirthdayIntervals() {
 	const EVERY_HOUR = 60 * 60 * 1000;
@@ -13,17 +13,10 @@ export async function setupBirthdayIntervals() {
 async function runBirthdayCheckByGuild(guildId: string) {
 	const guild = await client.guilds.fetch(guildId).catch(() => null);
 	if (guild === null) return;
-	const settings = await Settings.getByGuild(guild.id);
-	if (settings === undefined) return;
-	if (
-		settings.birthday_role_id === null &&
-		settings.birthday_channel_id === null
-	)
-		return;
 	const role = settings.birthday_role_id
 		? await guild.roles.fetch(settings.birthday_role_id).catch(() => null)
 		: null;
-	const todaysBirthdays = await Birthday.todaysBirthdays(guildId);
+	const todaysBirthdays = await Birthday.todaysBirthdays();
 	for (const birthday of todaysBirthdays) {
 		if (birthday.last_celebrated_year === new Date().getFullYear()) continue;
 		const member = await guild.members
@@ -39,10 +32,7 @@ async function runBirthdayCheckByGuild(guildId: string) {
 		if (channel && channel.type === ChannelType.GuildText && member) {
 			await channel.send(`Happy birthday to ${member}!`).catch(() => null);
 		}
-		await Birthday.updateLastCelebratedYear({
-			guildId: birthday.guild_id,
-			userId: birthday.user_id,
-		});
+		await Birthday.updateLastCelebratedYear(birthday.user_id);
 	}
 	if (role === null) return;
 	for (const member of role.members.values()) {

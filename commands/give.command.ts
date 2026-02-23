@@ -3,7 +3,7 @@ import {
 	MessageFlags,
 	PermissionFlagsBits,
 } from "discord.js";
-import { TempRoles } from "../db";
+import { TempRoles } from "../database/tempRoles";
 import { parseDuration } from "../utils";
 import type { Command } from "./types";
 
@@ -89,7 +89,6 @@ export default {
 
 		const expiresOn = Date.now() + time;
 		const id = await TempRoles.add({
-			guildId: interaction.guild.id,
 			roleId: role.id,
 			userId: user.id,
 			expiresOn: new Date(expiresOn),

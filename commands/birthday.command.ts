@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, MessageFlags } from "discord.js";
-import { Birthday } from "../db";
+import { Birthday } from "../database/birthday";
 import type { Command } from "./types";
 
 export default {

@@ -6,7 +6,6 @@ import {
 	type Guild,
 	MessageFlags,
 } from "discord.js";
-import { Ticket } from "../db";
 import type { Command } from "./types";
 
 export default {
@@ -21,12 +20,7 @@ export default {
 			userId: interaction.user.id,
 			name: interaction.user.username,
 		});
-		const id = await Ticket.open({
-			guildId: interaction.guild.id,
-			channelId: channel.id,
-			ownerId: interaction.user.id,
-		});
-		const closeButton = createCloseButton(id);
+		const closeButton = createCloseButton();
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			closeButton,
 		);
@@ -91,9 +85,9 @@ async function createChannel({
 	});
 }
 
-function createCloseButton(ticketId: number) {
+function createCloseButton() {
 	return new ButtonBuilder()
-		.setCustomId(`close-ticket:${ticketId}`)
+		.setCustomId("close-ticket")
 		.setLabel("Close ticket")
 		.setStyle(ButtonStyle.Danger);
 }
