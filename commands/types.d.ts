@@ -2,7 +2,7 @@ import type {
 	ApplicationCommandOptionData,
 	ChatInputCommandInteraction,
 	Guild,
-	PermissionFlagBits,
+	PermissionFlagsBits,
 } from "discord.js";
 
 export type CommandEnvironment = "guild" | "dm" | "both";
@@ -10,7 +10,7 @@ export type CommandEnvironment = "guild" | "dm" | "both";
 export type Command<E extends CommandEnvironment> = {
 	description: string;
 	options?: ApplicationCommandOptionData[];
-	permissions: PermissionFlagBits[];
+	permissions: PermissionFlagsBits[];
 	environment: E;
 	run: (
 		interaction: E extends "guild"

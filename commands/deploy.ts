@@ -6,9 +6,12 @@ const setGlobally = process.argv.includes("--global");
 
 const commands = await fetchCommands();
 const commandsData = Array.from(commands).map(([name, command]) => {
+	const combined = command.permissions.reduce((acc, perm) => acc | perm, 0n);
+	const permissions = combined === 0n ? null : combined;
 	const builder = new SlashCommandBuilder()
 		.setName(name)
-		.setDescription(command.description);
+		.setDescription(command.description)
+		.setDefaultMemberPermissions(permissions);
 	if (!command.options) return builder;
 
 	const json = builder.toJSON();
