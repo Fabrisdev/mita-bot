@@ -7,7 +7,6 @@ import {
 	ComponentType,
 	type Interaction,
 	MessageFlags,
-	PermissionsBitField,
 } from "discord.js";
 import { fetchCommands } from "../commands/handler";
 import { Ticket } from "../db";
@@ -116,16 +115,6 @@ async function handleChatInputCommand(
 		await Log.error("COMMANDS AVAILABLE:", commands);
 		return;
 	}
-	for (const permission of command.permissions) {
-		if (!interaction.memberPermissions?.has(permission)) {
-			const permissionName = permissionBitToName(permission);
-			interaction.reply({
-				content: `This command requires the \`${permissionName}\` permission.`,
-				flags: MessageFlags.Ephemeral,
-			});
-			return;
-		}
-	}
 	if (command.environment === "guild" && interaction.guild === null) {
 		await interaction.reply({
 			content: "This command can only be run inside the server.",
@@ -155,16 +144,4 @@ async function handleChatInputCommand(
 		}
 		await interaction.reply(errorMessage);
 	}
-}
-
-function permissionBitToName(permission: bigint) {
-	const name =
-		Object.entries(PermissionsBitField.Flags).find(
-			([, value]) => value === permission,
-		)?.[0] ?? "Unknown permission";
-	return prettifyPermissionName(name);
-}
-
-function prettifyPermissionName(name: string) {
-	return name.replace(/([A-Z])/g, " $1").trim();
 }
