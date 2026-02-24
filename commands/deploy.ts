@@ -32,7 +32,7 @@ const commandsData = Array.from(commands).map(([name, command]) => {
 
 const rest = new REST().setToken(token());
 console.log(
-	`Started refreshing slash commands ${setGlobally ? "GLOBALLY" : "on the testing server"}.`,
+	`Started refreshing slash commands ${setGlobally ? "GLOBALLY" : "on the server"}.`,
 );
 const route = setGlobally
 	? Routes.applicationCommands(clientId())
@@ -41,6 +41,6 @@ await rest.put(route, {
 	body: commandsData,
 });
 console.log(
-	`Successfully refreshed slash commands ${setGlobally ? "GLOBALLY" : "on the testing server"}.`,
+	`Successfully refreshed slash commands ${setGlobally ? "GLOBALLY" : "on the server"}.`,
 );
 process.exit(0);
