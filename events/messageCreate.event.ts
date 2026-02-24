@@ -14,7 +14,7 @@ export namespace CountingSystem {
 		if (!message.guild) return;
 		if (message.channel.type !== ChannelType.GuildText) return;
 		if (message.author.bot) return;
-		const data = await Counting.get();
+		const data = Counting.get();
 		if (message.channel.id !== Counting.CHANNEL_ID) return;
 
 		const { content } = message;
