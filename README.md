@@ -51,5 +51,6 @@ bun run start
     ```
 4. Make sure to have added the `DATABASE_URL` environment variable
 5. Populate the database by running `bun run db:populate`
+6. Generate the types with `bun run db:generate`
 
 For more scripts, you can check out the `package.json` file.
