@@ -1,21 +1,22 @@
 import { ChannelType } from "discord.js";
 import { client } from "./client";
 import { Birthday } from "./database/birthday";
+import { guildId } from "./environment";
+
+const BIRTHDAY_ROLE_ID = "1424184101354602506";
+const BIRTHDAY_CHANNEL_ID = "1369436131984277564"; //general-eng
 
 export async function setupBirthdayIntervals() {
 	const EVERY_HOUR = 60 * 60 * 1000;
-	await runBirthdayCheckForAllGuilds();
+	await runBirthdayCheckWithLog();
 	setInterval(async () => {
-		await runBirthdayCheckForAllGuilds();
+		await runBirthdayCheckWithLog();
 	}, EVERY_HOUR);
 }
 
-async function runBirthdayCheckByGuild(guildId: string) {
-	const guild = await client.guilds.fetch(guildId).catch(() => null);
-	if (guild === null) return;
-	const role = settings.birthday_role_id
-		? await guild.roles.fetch(settings.birthday_role_id).catch(() => null)
-		: null;
+async function runBirthdayCheck() {
+	const guild = await client.guilds.fetch(guildId());
+	const role = await guild.roles.fetch(BIRTHDAY_ROLE_ID);
 	const todaysBirthdays = await Birthday.todaysBirthdays();
 	for (const birthday of todaysBirthdays) {
 		if (birthday.last_celebrated_year === new Date().getFullYear()) continue;
@@ -26,9 +27,7 @@ async function runBirthdayCheckByGuild(guildId: string) {
 			if (member === null) continue;
 			await member.roles.add(role).catch(() => null);
 		}
-		const channel = settings.birthday_channel_id
-			? await guild.channels.fetch(settings.birthday_channel_id)
-			: null;
+		const channel = await guild.channels.fetch(BIRTHDAY_CHANNEL_ID);
 		if (channel && channel.type === ChannelType.GuildText && member) {
 			await channel.send(`Happy birthday to ${member}!`).catch(() => null);
 		}
@@ -44,12 +43,8 @@ async function runBirthdayCheckByGuild(guildId: string) {
 	}
 }
 
-async function runBirthdayCheckForAllGuilds() {
+async function runBirthdayCheckWithLog() {
 	console.log("Running birthday checks...");
-	for (const guild of client.guilds.cache.values()) {
-		const settings = await Settings.getByGuild(guild.id);
-		if (settings === undefined) continue;
-		await runBirthdayCheckByGuild(settings.guild_id);
-	}
+	await runBirthdayCheck();
 	console.log("Finished running birthday checks.");
 }
