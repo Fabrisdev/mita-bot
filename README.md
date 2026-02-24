@@ -4,7 +4,7 @@ Mita bot is a Discord bot developed for Mita's Heart community.
 ## Installation
 1. Clone the repo
     ```bash
-    bun install
+    git clone https://github.com/Fabrisdev/mita-bot.git
     ```
 2. Install dependencies
     ```bash
