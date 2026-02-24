@@ -24,6 +24,7 @@ export namespace CountingSystem {
 		if (result !== nextNumber) {
 			await message.react("🍅");
 			data.currentNumber = 0;
+			data.lastSenderId = "";
 			const image = await generateTomatoImage(message.author);
 			await message.reply({
 				content: `${message.author} **RUINED IT AT ${nextNumber}**!! 🍅 🍅 🍅 Let's start again from 1...
