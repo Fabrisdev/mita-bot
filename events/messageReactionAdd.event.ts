@@ -40,9 +40,14 @@ export default async (reaction: MessageReaction, user: User) => {
 		const starboardMessageId = isAlreadyThere.starboard_message_id;
 		const message = await channel.messages.fetch(starboardMessageId);
 		await message.edit(messageToSend);
+		return;
 	}
 
-	await channel.send(messageToSend);
+	const starboardMessage = await channel.send(messageToSend);
+	await Starboard.add({
+		messageId: reaction.message.id,
+		starboardMessageId: starboardMessage.id,
+	});
 };
 
 function createMessage({
