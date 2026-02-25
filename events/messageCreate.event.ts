@@ -2,6 +2,7 @@ import { ChannelType, type Message } from "discord.js";
 import { evaluate } from "mathjs";
 import { Counting } from "../commands/counting";
 import { generateTomatoImage } from "../commands/tomato.command";
+import { COUNTING_CHANNEL_ID } from "../consts";
 import { cycle } from "../utils";
 
 export default async (message: Message) => {
@@ -15,7 +16,7 @@ export namespace CountingSystem {
 		if (message.channel.type !== ChannelType.GuildText) return;
 		if (message.author.bot) return;
 		const data = Counting.get();
-		if (message.channel.id !== Counting.CHANNEL_ID) return;
+		if (message.channel.id !== COUNTING_CHANNEL_ID) return;
 
 		const { content } = message;
 		const nextNumber = data.currentNumber + 1;

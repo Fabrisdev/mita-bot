@@ -1,7 +1,6 @@
 import { findArgWithValue } from "../args";
 
 export namespace Counting {
-	export const CHANNEL_ID = "1423258571990106163";
 	const initialCount = getInitialNumber();
 	console.log("Initial count set to:", initialCount);
 	const data = {
