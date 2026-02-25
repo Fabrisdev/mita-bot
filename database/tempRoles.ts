@@ -1,5 +1,6 @@
 import { client } from "../client";
 import { guildId } from "../environment";
+import { Log } from "../log";
 import { db } from "./database";
 
 export namespace TempRoles {
@@ -39,7 +40,7 @@ export namespace TempRoles {
 	}
 
 	export async function remove(id: number) {
-		console.log(`Marked role ${id} as removed.`);
+		Log.log(`Marked role ${id} as removed.`);
 		await markAsRemoved(id);
 		const role = await db
 			.selectFrom("temp_roles")
@@ -52,6 +53,6 @@ export namespace TempRoles {
 		const member = await guild.members.fetch(role.user_id).catch(() => null);
 		if (member === null) return;
 		await member.roles.remove(role.role_id).catch(() => null);
-		console.log(`Removed role ${role.role_id} from user ${role.user_id}.`);
+		Log.log(`Removed role ${role.role_id} from user ${role.user_id}.`);
 	}
 }

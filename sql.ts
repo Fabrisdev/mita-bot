@@ -1,8 +1,9 @@
 import { sql } from "bun";
+import { Log } from "./log";
 
-console.log("Reading tables file...");
+Log.log("Reading tables file...");
 const file = Bun.file("tables.sql");
 const tables = await file.text();
-console.log("File parsed, generating SQL tables...");
+Log.log("File parsed, generating SQL tables...");
 await sql.unsafe(tables);
-console.log("Tables generated succesfully.");
+Log.log("Tables generated succesfully.");

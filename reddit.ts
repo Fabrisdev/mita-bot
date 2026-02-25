@@ -51,7 +51,7 @@ function formatPostIntoEmbed(d: Data2) {
 }
 
 async function fetchPosts() {
-	console.log("Fetching Reddit posts...");
+	Log.log("Fetching Reddit posts...");
 	const url = "https://www.reddit.com/r/MiSideReddit/hot.json";
 
 	const posts = (await fetch(url, {
@@ -69,7 +69,7 @@ async function fetchPosts() {
 		Log.error(posts);
 		return null;
 	}
-	console.log(`${posts.data.children.length} posts fetched.`);
+	Log.log(`${posts.data.children.length} posts fetched.`);
 	const filteredPosts: Children[] = [];
 	for (const post of posts.data.children) {
 		if (post.data.score < 100) continue;
@@ -77,6 +77,6 @@ async function fetchPosts() {
 		if (!isNew) continue;
 		filteredPosts.push(post);
 	}
-	console.log(`After filtering, ${filteredPosts.length} posts sent to Guilds.`);
+	Log.log(`After filtering, ${filteredPosts.length} posts sent to Guilds.`);
 	return filteredPosts;
 }

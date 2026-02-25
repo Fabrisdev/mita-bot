@@ -5,6 +5,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { clientId, guildId, token } from "../environment";
+import { Log } from "../log";
 import { fetchCommands } from "./handler";
 
 const setGlobally = process.argv.includes("--global");
@@ -31,7 +32,7 @@ const commandsData = Array.from(commands).map(([name, command]) => {
 });
 
 const rest = new REST().setToken(token());
-console.log(
+Log.log(
 	`Started refreshing slash commands ${setGlobally ? "GLOBALLY" : "on the server"}.`,
 );
 const route = setGlobally
@@ -40,7 +41,7 @@ const route = setGlobally
 await rest.put(route, {
 	body: commandsData,
 });
-console.log(
+Log.log(
 	`Successfully refreshed slash commands ${setGlobally ? "GLOBALLY" : "on the server"}.`,
 );
 process.exit(0);

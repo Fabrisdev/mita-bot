@@ -3,6 +3,7 @@ import { client } from "./client";
 import { BIRTHDAY_CHANNEL_ID, BIRTHDAY_ROLE_ID } from "./consts";
 import { Birthday } from "./database/birthday";
 import { guildId } from "./environment";
+import { Log } from "./log";
 
 export async function setupBirthdayIntervals() {
 	const EVERY_HOUR = 60 * 60 * 1000;
@@ -42,7 +43,7 @@ async function runBirthdayCheck() {
 }
 
 async function runBirthdayCheckWithLog() {
-	console.log("Running birthday checks...");
+	Log.log("Running birthday checks...");
 	await runBirthdayCheck();
-	console.log("Finished running birthday checks.");
+	Log.log("Finished running birthday checks.");
 }
