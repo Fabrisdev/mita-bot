@@ -1,3 +1,5 @@
+import { isDevEnvironment } from "./consts";
+
 export function token() {
 	const token = process.env.BOT_TOKEN;
 	if (token === undefined) warnAndCrash("token");
@@ -11,9 +13,7 @@ export function clientId() {
 }
 
 export function guildId() {
-	const guildId = process.env.GUILD_ID;
-	if (guildId === undefined) warnAndCrash("guild id");
-	return guildId;
+	return isDevEnvironment ? "1461519620660924543" : "1369433346546991136";
 }
 
 export function convexUrl() {

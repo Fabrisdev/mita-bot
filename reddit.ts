@@ -1,5 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { client } from "./client";
+import { REDDIT_POSTS_CHANNEL_ID } from "./consts";
 import { Reddit } from "./database/reddit";
 import { Log } from "./log";
 import type { Children, Data2, RedditData } from "./reddit.types";
@@ -8,7 +9,7 @@ export async function publishRedditPosts() {
 	const embeds = await getEmbeds();
 	if (embeds === null) return;
 	const channel = await client.channels
-		.fetch("1475223863297314816")
+		.fetch(REDDIT_POSTS_CHANNEL_ID)
 		.catch(() => null);
 	if (channel === null || !channel.isSendable()) return;
 	for (const embed of embeds) {
