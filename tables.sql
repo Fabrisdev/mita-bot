@@ -33,3 +33,8 @@ CREATE TABLE temp_roles(
 CREATE TABLE already_sent_reddit_posts(
   id TEXT PRIMARY KEY
 );
+
+CREATE TABLE starboard(
+  message_id TEXT PRIMARY KEY,
+  starboard_message_id TEXT NOT NULL
+);
