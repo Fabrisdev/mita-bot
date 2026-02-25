@@ -1,10 +1,8 @@
 import { ChannelType } from "discord.js";
 import { client } from "./client";
+import { BIRTHDAY_CHANNEL_ID, BIRTHDAY_ROLE_ID } from "./consts";
 import { Birthday } from "./database/birthday";
 import { guildId } from "./environment";
-
-const BIRTHDAY_ROLE_ID = "1424184101354602506";
-const BIRTHDAY_CHANNEL_ID = "1369436131984277564"; //general-eng
 
 export async function setupBirthdayIntervals() {
 	const EVERY_HOUR = 60 * 60 * 1000;
