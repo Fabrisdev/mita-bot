@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"start": "bun run index.ts",
-		"dev": "bun run --watch index.ts",
+		"dev": "bun run --watch index.ts --dev",
 		"deploy:commands": "bun run commands/deploy.ts",
 		"db:populate": "bun run sql.ts",
 		"db:generate": "bun run kysely-codegen --out-file database/db.types.ts"
