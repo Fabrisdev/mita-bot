@@ -20,6 +20,10 @@ export default {
 	],
 	run: async (interaction) => {
 		const user = interaction.options.getUser("user", true);
+		if (user.id === interaction.client.user.id) {
+			await interaction.reply("WHAT?! What did I do?!");
+			return;
+		}
 		const image = await generateTomatoImage(user);
 		await interaction.reply({
 			content: `${interaction.user} threw tomatoes at ${user}!`,

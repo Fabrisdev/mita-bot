@@ -1,8 +1,9 @@
 import { findArgWithValue } from "../args";
+import { Log } from "../log";
 
 export namespace Counting {
 	const initialCount = getInitialNumber();
-	console.log("Initial count set to:", initialCount);
+	Log.log("Initial count set to:", initialCount);
 	const data = {
 		currentNumber: getInitialNumber(),
 		lastSenderId: "",

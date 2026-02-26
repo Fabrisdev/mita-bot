@@ -1,13 +1,31 @@
 import { ChannelType, type Message } from "discord.js";
 import { evaluate } from "mathjs";
+import { client } from "../client";
 import { Counting } from "../commands/counting";
 import { generateTomatoImage } from "../commands/tomato.command";
 import { COUNTING_CHANNEL_ID } from "../consts";
 import { cycle } from "../utils";
 
 export default async (message: Message) => {
+	ReplySystem.run(message);
 	CountingSystem.run(message);
 };
+
+export namespace ReplySystem {
+	const replies = cycle([
+		"Yes?",
+		"What's up?",
+		"Huh?",
+		"What?",
+		"Hi!",
+		"Hello!",
+	]);
+	export function run(message: Message) {
+		if (message.mentions.has(client.user)) {
+			message.reply(replies.next().value);
+		}
+	}
+}
 
 export namespace CountingSystem {
 	const positiveReactions = cycle(["✅", "⭐", "🔥", "🗣️"] as const);
