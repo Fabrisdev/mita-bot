@@ -21,4 +21,4 @@ export const ALERTS_CHANNEL_ID = isDevEnvironment
 	: "1372930870771585047";
 export const STARBOARD_CHANNEL_ID = isDevEnvironment
 	? "1476032492010999828"
-	: "";
+	: "1476432714168275026";

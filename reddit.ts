@@ -62,13 +62,16 @@ async function fetchPosts() {
 			"Accept-Language": "en-US,en;q=0.9",
 		},
 	})
-		.then((res) => res.json())
+		.then(async (res) => {
+			if (res.ok) return res.json();
+			await Log.errorWithoutMessaging(
+				"Failed fetching Reddit posts. More info below:",
+			);
+			console.error(res);
+			throw res;
+		})
 		.catch(() => null)) as RedditData | null;
-	if (posts === null) {
-		Log.error("Failed fetching Reddit posts. More info below:");
-		Log.error(posts);
-		return null;
-	}
+	if (posts === null) return null;
 	Log.log(`${posts.data.children.length} posts fetched.`);
 	const filteredPosts: Children[] = [];
 	for (const post of posts.data.children) {
@@ -77,6 +80,6 @@ async function fetchPosts() {
 		if (!isNew) continue;
 		filteredPosts.push(post);
 	}
-	Log.log(`After filtering, ${filteredPosts.length} posts sent to Guilds.`);
+	Log.log(`After filtering, ${filteredPosts.length} posts sent to the guild.`);
 	return filteredPosts;
 }

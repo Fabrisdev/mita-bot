@@ -12,7 +12,11 @@ export namespace Log {
 	export async function error(...data: unknown[]) {
 		const botOwner = await client.users.fetch(BOT_OWNER_ID);
 		const message = data.join(" ");
+		console.error(message);
 		await botOwner.send(message);
+	}
+	export async function errorWithoutMessaging(...data: unknown[]) {
+		const message = data.join(" ");
 		console.error(message);
 	}
 	export async function log(...data: unknown[]) {
