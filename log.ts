@@ -6,6 +6,7 @@ export namespace Log {
 		gray: "\x1b[90m",
 		blue: "\x1b[34m",
 		green: "\x1b[32m",
+		yellow: "\x1b[33m",
 	};
 	const BOT_OWNER_ID = "317105612100075520";
 
@@ -26,7 +27,11 @@ export namespace Log {
 		logLevel("success", ...data);
 	}
 
-	function logLevel(level: "info" | "success", ...data: unknown[]) {
+	export async function warn(...data: unknown[]) {
+		logLevel("warn", ...data);
+	}
+
+	function logLevel(level: "info" | "success" | "warn", ...data: unknown[]) {
 		const now = new Date();
 
 		const hours = now.getHours().toString().padStart(2, "0");
@@ -39,6 +44,8 @@ export namespace Log {
 
 		if (level === "success") {
 			levelTag = `${colors.green}[SUCCESS]${colors.reset}`;
+		} else if (level === "warn") {
+			levelTag = `${colors.yellow}[WARN]${colors.reset}`;
 		} else {
 			levelTag = `${colors.blue}[INFO]${colors.reset}`;
 		}

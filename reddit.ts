@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { client } from "./client";
-import { REDDIT_POSTS_CHANNEL_ID } from "./consts";
+import { isDevEnvironment, REDDIT_POSTS_CHANNEL_ID } from "./consts";
 import { Reddit } from "./database/reddit";
 import { Log } from "./log";
 import type { Children, Data2, RedditData } from "./reddit.types";
@@ -51,6 +51,10 @@ function formatPostIntoEmbed(d: Data2) {
 }
 
 async function fetchPosts() {
+	if (isDevEnvironment) {
+		Log.warn("Skipped fetching Reddit posts due to being in DEV mode.");
+		return null;
+	}
 	Log.log("Fetching Reddit posts...");
 	const url = "https://www.reddit.com/r/MiSideReddit/hot.json";
 
