@@ -4,6 +4,14 @@ import { token } from "./environment";
 import { registerEvents } from "./events/register";
 import { Log } from "./log";
 
+process.on("unhandledRejection", (reason) => {
+	console.error(reason);
+});
+
+process.on("uncaughtException", (error) => {
+	console.error(error);
+});
+
 Log.log(isDevEnvironment ? "DEV mode enabled." : "Working on production.");
 await registerEvents();
 client.login(token());
