@@ -14,6 +14,13 @@ import { Starboard } from "../database/starboard";
 
 export default async (reaction: MessageReaction, user: User) => {
 	if (reaction.emoji.name !== "⭐") return;
+	const MITA_HEARTS_CATEGORY_ID = "1369447930905366620";
+	const sentAtChannel = reaction.message.channel;
+	if (
+		"parentId" in sentAtChannel &&
+		sentAtChannel.parentId === MITA_HEARTS_CATEGORY_ID
+	)
+		return;
 	if (!reaction.message.author || reaction.message.content === null) return;
 	if (reaction.message.author.id === user.id) {
 		await reaction.users.remove(user.id);
