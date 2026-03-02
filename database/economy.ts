@@ -1,13 +1,13 @@
 import { db } from "./database";
 
 async function addMoney(userId: string) {
-	const INCREMENT_AMOUNT = 5;
+	const incrementBy = randomInt(5, 10);
 	await db
 		.insertInto("economy")
-		.values({ user_id: userId, amount: INCREMENT_AMOUNT })
+		.values({ user_id: userId, amount: incrementBy })
 		.onConflict((oc) =>
 			oc.column("user_id").doUpdateSet((eb) => ({
-				amount: eb("economy.amount", "+", INCREMENT_AMOUNT),
+				amount: eb("economy.amount", "+", incrementBy),
 			})),
 		)
 		.execute();
@@ -29,4 +29,8 @@ export namespace Economy {
 			queryAmount: () => queryAmount(userId),
 		};
 	}
+}
+
+function randomInt<A extends number, B extends number>(a: A, b: B) {
+	return Math.floor(Math.random() * (b - a + 1)) + a;
 }
