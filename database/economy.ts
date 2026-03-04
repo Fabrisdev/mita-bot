@@ -31,6 +31,6 @@ export namespace Economy {
 	}
 }
 
-function randomInt<A extends number, B extends number>(a: A, b: B) {
+function randomInt(a: number, b: number) {
 	return Math.floor(Math.random() * (b - a + 1)) + a;
 }
