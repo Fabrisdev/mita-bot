@@ -20,6 +20,13 @@ export default {
 	],
 	run: async (interaction) => {
 		const amount = interaction.options.getNumber("amount", true);
+		if (amount > 100) {
+			await interaction.reply({
+				content: `You can only bulk delete a max of 100 messages.`,
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
 		if (interaction.channel?.type !== ChannelType.GuildText) return;
 		await interaction.channel.bulkDelete(amount);
 		await interaction.reply({
