@@ -25,4 +25,6 @@ export const STARBOARD_CHANNEL_ID = isDevEnvironment
 export const CARTRIDGE_EMOJI = isDevEnvironment
 	? "<:cartridge:1477871463410176010>"
 	: "<:cartridge:1370074273586221108>";
-export const MICHAN_CHANNEL_ID = isDevEnvironment ? "1488748812439650314" : "";
+export const MICHAN_CHANNEL_ID = isDevEnvironment
+	? "1488748812439650314"
+	: "1488776035649585172";
