@@ -38,3 +38,8 @@ CREATE TABLE starboard(
   message_id TEXT PRIMARY KEY,
   starboard_message_id TEXT NOT NULL
 );
+
+CREATE TABLE economy(
+  user_id TEXT PRIMARY KEY,
+  amount INT NOT NULL DEFAULT 0
+)

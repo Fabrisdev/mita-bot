@@ -14,7 +14,7 @@ export const REDDIT_POSTS_CHANNEL_ID = isDevEnvironment
 	? "1474975172565143713"
 	: "1475223863297314816";
 export const COUNTING_CHANNEL_ID = isDevEnvironment
-	? "1461519620660924543"
+	? "1469571859799343357"
 	: "1423258571990106163";
 export const ALERTS_CHANNEL_ID = isDevEnvironment
 	? "1469107951791771902"
@@ -22,3 +22,6 @@ export const ALERTS_CHANNEL_ID = isDevEnvironment
 export const STARBOARD_CHANNEL_ID = isDevEnvironment
 	? "1476032492010999828"
 	: "1476432714168275026";
+export const CARTRIDGE_EMOJI = isDevEnvironment
+	? "<:cartridge:1477871463410176010>"
+	: "<:cartridge:1370074273586221108>";
