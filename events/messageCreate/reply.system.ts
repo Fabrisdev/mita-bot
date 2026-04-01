@@ -36,6 +36,7 @@ export default async (message: Message) => {
 				await message.channel.messages.fetch(referenceId);
 			if (referenceMessage.deletable) referenceMessage.delete();
 			if (message.deletable) message.delete();
+			trackedMessages.delete(referenceId);
 		}
 
 		return;
