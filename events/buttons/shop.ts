@@ -120,7 +120,9 @@ export async function handleShopInteraction(
 			.setTextInputComponent(customColorInput);
 
 		const bottomText = new TextDisplayBuilder().setContent(
-			"The purchase of this item will cost 500 cartridges and will last for 7 days.\n- **COST**: 500 cartridges\n- **DURATION**: 7 days\n-# By continuing, you agree to this purchase and acknowledge that no refunds will be available.",
+			"The purchase of this item will cost 500 cartridges and will last for 7 days.\n- **COST**: 500 " +
+				CARTRIDGE_EMOJI +
+				"\n- **DURATION**: 7 days\n-# By continuing, you agree to this purchase and acknowledge that no refunds will be available.",
 		);
 
 		modal
