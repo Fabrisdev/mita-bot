@@ -23,6 +23,10 @@ export default {
 		if (channel === null) {
 			if (interaction.channel?.isSendable()) {
 				await interaction.channel.send(shop);
+				await interaction.reply({
+					content: "Sent!",
+					flags: [MessageFlags.Ephemeral],
+				});
 				return;
 			}
 			await interaction.reply({
@@ -42,5 +46,9 @@ export default {
 			return;
 		}
 		await chosenChannel.send(shop);
+		await interaction.reply({
+			content: "Sent!",
+			flags: [MessageFlags.Ephemeral],
+		});
 	},
 } satisfies Command<"guild">;
