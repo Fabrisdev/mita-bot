@@ -22,22 +22,22 @@ export function shopMessage() {
 	const row1 =
 		new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
 			new ButtonBuilder()
-				.setCustomId("buy_color")
+				.setCustomId("shop_buy_color")
 				.setLabel("🎨 Custom Color (500)")
 				.setStyle(ButtonStyle.Primary),
 
 			new ButtonBuilder()
-				.setCustomId("buy_xp")
+				.setCustomId("shop_buy_xp")
 				.setLabel("🚀 XP Boost x2 (900)")
 				.setStyle(ButtonStyle.Success),
 
 			new ButtonBuilder()
-				.setCustomId("buy_server_xp")
+				.setCustomId("shop_buy_server_xp")
 				.setLabel("🚀 SERVER XP x2 (3000)")
 				.setStyle(ButtonStyle.Success),
 
 			new ButtonBuilder()
-				.setCustomId("buy_role")
+				.setCustomId("shop_buy_role")
 				.setLabel("👑 Custom Role (10000)")
 				.setStyle(ButtonStyle.Secondary),
 		);
@@ -45,17 +45,17 @@ export function shopMessage() {
 	const row2 =
 		new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
 			new ButtonBuilder()
-				.setCustomId("buy_timeout")
+				.setCustomId("shop_buy_timeout")
 				.setLabel("🚫 Timeout Someone (500)")
 				.setStyle(ButtonStyle.Danger),
 
 			new ButtonBuilder()
-				.setCustomId("buy_rename")
+				.setCustomId("shop_buy_rename")
 				.setLabel("🎭 Change Name (1500)")
 				.setStyle(ButtonStyle.Primary),
 
 			new ButtonBuilder()
-				.setCustomId("buy_command")
+				.setCustomId("shop_buy_command")
 				.setLabel("‼️ Custom Bot Command (20000)")
 				.setStyle(ButtonStyle.Secondary),
 		);
@@ -63,7 +63,7 @@ export function shopMessage() {
 	const row3 =
 		new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
 			new ButtonBuilder()
-				.setCustomId("check_balance")
+				.setCustomId("shop_check_balance")
 				.setEmoji(CARTRIDGE_EMOJI)
 				.setLabel("Check your balance")
 				.setStyle(ButtonStyle.Primary),
