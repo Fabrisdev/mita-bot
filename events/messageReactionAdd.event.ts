@@ -10,9 +10,16 @@ import {
 } from "discord.js";
 import { client } from "../client";
 import { STARBOARD_CHANNEL_ID } from "../consts";
+import { Eggs } from "../database/eggs";
 import { Starboard } from "../database/starboard";
+import { isEgg } from "../easter";
 
 export default async (reaction: MessageReaction, user: User) => {
+	if (isEgg(reaction.message.id)) {
+		const eggs = Eggs.of(user.id);
+		eggs.add();
+		if (reaction.message.deletable) reaction.message.delete();
+	}
 	if (reaction.emoji.name !== "⭐") return;
 	const MITA_HEARTS_CATEGORY_ID = "1369447930905366620";
 	const sentAtChannel = reaction.message.channel;
