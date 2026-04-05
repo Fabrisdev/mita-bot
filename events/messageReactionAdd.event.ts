@@ -15,7 +15,7 @@ import { Starboard } from "../database/starboard";
 import { isEgg } from "../easter";
 
 export default async (reaction: MessageReaction, user: User) => {
-	if (isEgg(reaction.message.id)) {
+	if (isEgg(reaction.message.id, true)) {
 		const eggs = Eggs.of(user.id);
 		eggs.add();
 		if (reaction.message.deletable) reaction.message.delete();

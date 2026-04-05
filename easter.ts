@@ -8,12 +8,14 @@ const images = cycle(["Cappie", "Kind", "Mila", "Mita", "Short"]);
 const trackedMessages = new Set<string>();
 
 export async function setupEasterEvent() {
-	const FIFTEEN_MINUTES = 15 * 60 * 1000;
+	const TEN_MINUTES = 10 * 60 * 1000;
 	const guild = await client.guilds.fetch(guildId());
-	setInterval(() => postEgg(guild), FIFTEEN_MINUTES);
+	setInterval(() => postEgg(guild), TEN_MINUTES);
 }
 
 async function postEgg(guild: Guild) {
+	const MAX_EGGS_AMOUNT = 5;
+	if (trackedMessages.size > MAX_EGGS_AMOUNT) return;
 	const PROHIBITED_CATEGORY = "1369447930905366620";
 	const channel = guild.channels.cache
 		.filter((channel) => channel.isSendable())
@@ -28,6 +30,10 @@ async function postEgg(guild: Guild) {
 	trackedMessages.add(message.id);
 }
 
-export function isEgg(messageId: string) {
-	return trackedMessages.has(messageId);
+export function isEgg(messageId: string, deleteAfterChecking?: boolean) {
+	const isEgg = trackedMessages.has(messageId);
+	if (isEgg && deleteAfterChecking) {
+		trackedMessages.delete(messageId);
+	}
+	return isEgg;
 }
