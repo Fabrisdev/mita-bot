@@ -2,12 +2,14 @@ import path from "node:path";
 import type { Guild } from "discord.js";
 import { client } from "./client";
 import { guildId } from "./environment";
+import { Log } from "./log";
 import { cycle } from "./utils";
 
 const images = cycle(["Cappie", "Kind", "Mila", "Mita", "Short"]);
 const trackedMessages = new Set<string>();
 
 export async function setupEasterEvent() {
+	Log.success("Easter event started!");
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	const guild = await client.guilds.fetch(guildId());
 	setInterval(() => postEgg(guild), FIVE_MINUTES);
