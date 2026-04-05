@@ -42,4 +42,9 @@ CREATE TABLE starboard(
 CREATE TABLE economy(
   user_id TEXT PRIMARY KEY,
   amount INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE eggs(
+  user_id TEXT PRIMARY KEY,
+  amount INT NOT NULL DEFAULT 0
 )
