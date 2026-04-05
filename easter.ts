@@ -1,5 +1,5 @@
 import path from "node:path";
-import { ChannelType, type Guild } from "discord.js";
+import { ChannelType, type Guild, PermissionsBitField } from "discord.js";
 import { client } from "./client";
 import { guildId } from "./environment";
 import { Log } from "./log";
@@ -22,6 +22,10 @@ async function postEgg(guild: Guild) {
 	const channel = guild.channels.cache
 		.filter((channel) => channel.type === ChannelType.GuildText)
 		.filter((channel) => channel.parentId !== PROHIBITED_CATEGORY)
+		.filter((channel) => {
+			const perms = channel.permissionsFor(guild.members.me!);
+			return perms?.has(PermissionsBitField.Flags.SendMessages);
+		})
 		.random();
 	if (channel === undefined) return;
 	const filename = `Choco${images.next().value}.png`;
