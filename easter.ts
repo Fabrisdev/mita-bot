@@ -27,3 +27,7 @@ async function postEgg(guild: Guild) {
 	});
 	trackedMessages.add(message.id);
 }
+
+export function isEgg(messageId: string) {
+	return trackedMessages.has(messageId);
+}
