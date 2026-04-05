@@ -1,6 +1,7 @@
 import type { Client } from "discord.js";
 import { findBooleanArg } from "../args";
 import { setupBirthdayIntervals } from "../birthdays";
+import { setupEasterEvent } from "../easter";
 import { Log } from "../log";
 import { publishRedditPosts } from "../reddit";
 import { registerTempRoleTimeouts } from "../tempRolesHandler";
@@ -11,6 +12,7 @@ export default async (client: Client<true>) => {
 	await setupBirthdayIntervals();
 	const TWELVE_HOURS = 12 * 60 * 60 * 1000;
 	setInterval(publishRedditPosts, TWELVE_HOURS);
+	setupEasterEvent();
 	if (findBooleanArg("skip-reddit")) {
 		Log.warn("Skipped initial Reddit check.");
 		return;
