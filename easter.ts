@@ -18,10 +18,17 @@ export async function setupEasterEvent() {
 async function postEgg(guild: Guild) {
 	const MAX_EGGS_AMOUNT = 3;
 	if (trackedMessages.size > MAX_EGGS_AMOUNT) return;
-	const PROHIBITED_CATEGORY = "1369447930905366620";
+	const PROHIBITED_CATEGORIES = [
+		"1369447930905366620",
+		"1369435456986550402",
+		"1402078845204697242",
+	];
 	const channel = guild.channels.cache
 		.filter((channel) => channel.type === ChannelType.GuildText)
-		.filter((channel) => channel.parentId !== PROHIBITED_CATEGORY)
+		.filter(
+			(channel) =>
+				!channel.parentId || !PROHIBITED_CATEGORIES.includes(channel.parentId),
+		)
 		.filter((channel) => {
 			const perms = channel.permissionsFor(guild.members.me!);
 			return perms?.has(PermissionsBitField.Flags.SendMessages);
