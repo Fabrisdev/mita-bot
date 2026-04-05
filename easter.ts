@@ -8,9 +8,9 @@ const images = cycle(["Cappie", "Kind", "Mila", "Mita", "Short"]);
 const trackedMessages = new Set<string>();
 
 export async function setupEasterEvent() {
-	const TEN_MINUTES = 10 * 60 * 1000;
+	const FIVE_MINUTES = 5 * 60 * 1000;
 	const guild = await client.guilds.fetch(guildId());
-	setInterval(() => postEgg(guild), TEN_MINUTES);
+	setInterval(() => postEgg(guild), FIVE_MINUTES);
 }
 
 async function postEgg(guild: Guild) {
