@@ -51,6 +51,7 @@ async function postEgg(guild: Guild) {
 		});
 		Log.log(`Posted GOLDEN EGG in ${channel.id}!`);
 		trackedMessages.set(message.id, { type: "golden" });
+		return;
 	}
 	const filename = `Choco${images.next().value}.png`;
 	const imagePath = path.join("assets", filename);
