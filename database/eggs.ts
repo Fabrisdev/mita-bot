@@ -28,4 +28,13 @@ export namespace Eggs {
 			query: () => query(userId),
 		};
 	}
+
+	export async function leaderboard() {
+		return await db
+			.selectFrom("eggs")
+			.selectAll()
+			.orderBy("amount", "desc")
+			.limit(10)
+			.execute();
+	}
 }
