@@ -1,4 +1,3 @@
-import { MessageFlags } from "discord.js";
 import { Eggs } from "../database/eggs";
 import type { Command } from "./types";
 
@@ -14,7 +13,7 @@ export default {
 		const leaderboard = (
 			await Promise.all(
 				best.map(async (top) => ({
-					amount,
+					amount: top.amount,
 					user: await interaction.guild.members.fetch(top.user_id),
 				})),
 			)
