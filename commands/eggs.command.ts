@@ -11,16 +11,17 @@ export default {
 		const amount = await economy.query();
 		const best = await Eggs.leaderboard();
 
-		const leaderboard = best
-			.map((top) => ({
-				amount,
-				user: interaction.guild.members.cache.find(
-					(user) => user.id === top.user_id,
-				),
-			}))
+		const leaderboard = (
+			await Promise.all(
+				best.map(async (top) => ({
+					amount,
+					user: await interaction.guild.members.fetch(top.user_id),
+				})),
+			)
+		)
 			.map(
 				(top, i) =>
-					`${i}. **${top.user?.displayName}** with ${top.amount} eggs :star:`,
+					`${i}. **${top.user?.displayName}** with ${top.amount} eggs! :star: `,
 			)
 			.map((line) => `${line}\n`);
 		interaction.reply(
