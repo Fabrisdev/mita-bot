@@ -6,7 +6,10 @@ import { Log } from "./log";
 import { cycle } from "./utils";
 
 const images = cycle(["Cappie", "Kind", "Mila", "Mita", "Short"]);
-const trackedMessages = new Set<string>();
+type TrackedMessage = {
+	type: "normal" | "golden";
+};
+const trackedMessages = new Map<string, TrackedMessage>();
 
 export async function setupEasterEvent() {
 	Log.success("Easter event started!");
@@ -39,6 +42,16 @@ async function postEgg(guild: Guild) {
 		})
 		.random();
 	if (channel === undefined) return;
+	if (Math.random() <= 0.05) {
+		const imagePath = path.join("assets", "GoldenCappie.png");
+		Log.log(`Trying to post a GOLDEN EGG in ${channel.id}...`);
+		const message = await channel.send({
+			content: "A **GOLDEN EGG**??!!! **X10 VALUE**",
+			files: [imagePath],
+		});
+		Log.log(`Posted GOLDEN EGG in ${channel.id}!`);
+		trackedMessages.set(message.id, { type: "golden" });
+	}
 	const filename = `Choco${images.next().value}.png`;
 	const imagePath = path.join("assets", filename);
 	Log.log(`Trying to post an egg in ${channel.id}...`);
@@ -46,13 +59,13 @@ async function postEgg(guild: Guild) {
 		files: [imagePath],
 	});
 	Log.log(`Posted an egg in ${channel.id}!`);
-	trackedMessages.add(message.id);
+	trackedMessages.set(message.id, { type: "normal" });
 }
 
 export function isEgg(messageId: string, deleteAfterChecking?: boolean) {
-	const isEgg = trackedMessages.has(messageId);
-	if (isEgg && deleteAfterChecking) {
+	const egg = trackedMessages.get(messageId);
+	if (egg && deleteAfterChecking) {
 		trackedMessages.delete(messageId);
 	}
-	return isEgg;
+	return egg;
 }

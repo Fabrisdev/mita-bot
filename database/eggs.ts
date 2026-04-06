@@ -1,12 +1,12 @@
 import { db } from "./database";
 
-async function add(userId: string) {
+async function add(userId: string, amount: number) {
 	await db
 		.insertInto("eggs")
-		.values({ user_id: userId, amount: 1 })
+		.values({ user_id: userId, amount })
 		.onConflict((oc) =>
 			oc.column("user_id").doUpdateSet((eb) => ({
-				amount: eb("eggs.amount", "+", 1),
+				amount: eb("eggs.amount", "+", amount),
 			})),
 		)
 		.execute();
@@ -24,7 +24,8 @@ async function query(userId: string) {
 export namespace Eggs {
 	export function of(userId: string) {
 		return {
-			add: () => add(userId),
+			add: () => add(userId, 1),
+			addBy: (amount: number) => add(userId, amount),
 			query: () => query(userId),
 		};
 	}

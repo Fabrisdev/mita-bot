@@ -15,10 +15,17 @@ import { Starboard } from "../database/starboard";
 import { isEgg } from "../easter";
 
 export default async (reaction: MessageReaction, user: User) => {
-	if (isEgg(reaction.message.id, true)) {
+	const egg = isEgg(reaction.message.id, true);
+	if (egg) {
 		const eggs = Eggs.of(user.id);
-		eggs.add();
+		if (egg.type === "golden") {
+			eggs.addBy(10);
+		} else {
+			eggs.add();
+		}
+
 		if (reaction.message.deletable) reaction.message.delete();
+		return;
 	}
 	if (reaction.emoji.name !== "⭐") return;
 	const MITA_HEARTS_CATEGORY_ID = "1369447930905366620";
