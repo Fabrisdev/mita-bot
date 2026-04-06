@@ -31,7 +31,11 @@ async function postEgg(guild: Guild) {
 		)
 		.filter((channel) => {
 			const perms = channel.permissionsFor(guild.members.me!);
-			return perms?.has(PermissionsBitField.Flags.SendMessages);
+			return (
+				perms?.has(PermissionsBitField.Flags.ViewChannel) &&
+				perms?.has(PermissionsBitField.Flags.SendMessages) &&
+				perms?.has(PermissionsBitField.Flags.AttachFiles)
+			);
 		})
 		.random();
 	if (channel === undefined) return;
