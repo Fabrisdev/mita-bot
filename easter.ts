@@ -20,7 +20,11 @@ export async function setupEasterEvent() {
 
 async function postEgg(guild: Guild) {
 	const MAX_EGGS_AMOUNT = 3;
-	if (trackedMessages.size > MAX_EGGS_AMOUNT) return;
+	if (
+		Array.from(trackedMessages.values()).filter((m) => m.type !== "zombie")
+			.length > MAX_EGGS_AMOUNT
+	)
+		return;
 	const PROHIBITED_CATEGORIES = [
 		"1369447930905366620",
 		"1369435456986550402",
