@@ -29,6 +29,7 @@ async function postEgg(guild: Guild) {
 		"1369447930905366620",
 		"1369435456986550402",
 		"1402078845204697242",
+		"1385674060632952963",
 	];
 	const channel = guild.channels.cache
 		.filter((channel) => channel.type === ChannelType.GuildText)
